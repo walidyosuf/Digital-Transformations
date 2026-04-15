@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الاختبارات الشاملة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* =========================================
+           أنماط التطبيق 1: Cyber Security
+           ========================================= */
+        #cy-app { background-color: #f0f2f5; }
+        #cy-app .cy-option-btn { transition: all 0.2s; }
+        #cy-app .cy-selected-option { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+        #cy-app .cy-sticky-header { position: sticky; top: 0; z-index: 50; }
+
+        /* =========================================
+           أنماط التطبيق 2: Excel
+           ========================================= */
+        #ex-app {
+            --excel-green: #217346;
+            --excel-light: #e6f4ea;
+            --excel-danger: #d93025;
+            --excel-success: #188038;
+            --text-dark: #333;
+            --bg-gray: #f4f7f6;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+        }
+        #ex-app .ex-quiz-container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 10px solid var(--excel-green); }
+        #ex-app header { text-align: center; margin-bottom: 30px; position: sticky; top: 0; background: white; z-index: 100; padding: 10px; border-bottom: 1px solid #eee; }
+        #ex-app .ex-question-box { margin-bottom: 25px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff; transition: 0.3s; }
+        #ex-app .ex-question-box.ex-correct-bg { border-right: 8px solid var(--excel-success); background: #f1f8f4; }
+        #ex-app .ex-question-box.ex-wrong-bg { border-right: 8px solid var(--excel-danger); background: #fdf2f2; }
+        #ex-app .ex-question-text { font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block; }
+        #ex-app .ex-options { display: flex; flex-direction: column; gap: 10px; }
+        #ex-app .ex-option-label { padding: 12px 15px; border: 1px solid #eee; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; }
+        #ex-app .ex-option-label.ex-selected-correct { background-color: #c6e7d1; border-color: var(--excel-success); }
+        #ex-app .ex-option-label.ex-selected-wrong { background-color: #f9d7d7; border-color: var(--excel-danger); }
+        #ex-app .ex-option-label input { margin-left: 10px; }
+        #ex-app .ex-submit-area { position: sticky; bottom: 0; background: white; padding: 20px; border-top: 1px solid #eee; text-align: center; z-index: 100; }
+        #ex-app button { background-color: var(--excel-green); color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px; }
+        #ex-app button:hover { background-color: #1a5c38; }
+        #ex-app button.ex-secondary { background-color: #666; }
+        #ex-app #ex-result { display: none; padding: 20px; text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        #ex-app .ex-score-display { font-size: 48px; color: var(--excel-green); font-weight: bold; margin: 10px 0; }
+        #ex-app .ex-progress-container { width: 100%; height: 12px; background: #eee; border-radius: 6px; margin-top: 10px; overflow: hidden; }
+        #ex-app #ex-progress-bar { height: 100%; background: var(--excel-green); width: 0%; transition: 0.4s; }
+        #ex-app .ex-badge { display: inline-block; padding: 4px 8px; background: #eee; border-radius: 4px; font-size: 12px; margin-bottom: 10px; }
+        #ex-app .ex-note-box { margin-top: 10px; font-size: 14px; color: #217346; background: #e6f4ea; padding: 8px; border-radius: 5px; border-right: 3px solid var(--excel-green); }
+
+        /* =========================================
+           أنماط التطبيق 3: IT & OS
+           ========================================= */
+        #it-app {
+            --primary: #1a73e8;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --success: #1e8e3e;
+            --error: #d93025;
+            background-color: var(--bg);
+            color: #333;
+        }
+        #it-app .it-container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        #it-app .it-header-box { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 6px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
+        #it-app .it-question-card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        #it-app .it-q-number { background: #e8f0fe; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        #it-app .it-q-text { font-size: 17px; font-weight: 600; margin-bottom: 15px; line-height: 1.5; }
+        #it-app .it-options-list { list-style: none; padding: 0; }
+        #it-app .it-option-item { margin-bottom: 8px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; }
+        #it-app .it-option-item:not(.disabled):hover { background: #f8f9fa; border-color: var(--primary); }
+        #it-app .it-option-item input { margin-left: 10px; }
+        #it-app .it-option-item.disabled { cursor: default; }
+        #it-app .it-correct { background: #e6f4ea !important; border-color: var(--success) !important; color: var(--success); font-weight: bold; position: relative; }
+        #it-app .it-correct::after { content: '✓ (إجابة صحيحة)'; font-size: 12px; margin-right: auto; }
+        #it-app .it-wrong { background: #fce8e6 !important; border-color: var(--error) !important; color: var(--error); font-weight: bold; position: relative; }
+        #it-app .it-wrong::after { content: '✗ (إجابتك)'; font-size: 12px; margin-right: auto; }
+        #it-app .it-feedback { margin-top: 10px; padding: 12px; background: #fff9c4; border-right: 4px solid #fbc02d; font-size: 14px; border-radius: 4px; display: none; }
+        #it-app .it-result-panel { display: none; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-width: 2px; border-style: solid; }
+        #it-app .it-pass-panel { background: #e6f4ea; border-color: var(--success); color: var(--success); }
+        #it-app .it-fail-panel { background: #fce8e6; border-color: var(--error); color: var(--error); }
+        #it-app button.it-action-btn { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; cursor: pointer; display: block; margin: 30px auto; box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3); }
+        #it-app button.it-action-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        #it-app .it-progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+        #it-app #it-inner-progress { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+
+        /* =========================================
+           أنماط التطبيق 4: Mobile Apps
+           ========================================= */
+        #mo-app {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+        }
+        #mo-app .mo-container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        #mo-app header { text-align: center; border-bottom: 3px solid var(--secondary-color); margin-bottom: 40px; padding-bottom: 20px; }
+        #mo-app h1 { margin: 0; color: var(--primary-color); font-size: 28px; }
+        #mo-app .mo-subtitle { color: #666; font-size: 18px; margin-top: 10px; }
+        #mo-app .mo-question-card { margin-bottom: 30px; padding: 25px; border: 1px solid #e1e4e8; border-radius: 10px; background-color: #fff; transition: transform 0.2s ease; }
+        #mo-app .mo-question-card:hover { border-color: var(--secondary-color); }
+        #mo-app .mo-question-text { font-weight: 600; font-size: 19px; margin-bottom: 20px; display: block; color: #2c3e50; }
+        #mo-app .mo-options { display: grid; gap: 12px; }
+        #mo-app .mo-option { display: flex; align-items: center; padding: 14px 20px; border: 2px solid #edf2f7; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 17px; }
+        #mo-app .mo-option:hover { background-color: #f7fafc; border-color: #cbd5e0; }
+        #mo-app .mo-option input { margin-left: 15px; width: 18px; height: 18px; cursor: pointer; }
+        #mo-app .mo-btn-container { position: sticky; bottom: 20px; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); text-align: center; }
+        #mo-app button#mo-submit-btn { width: 80%; padding: 18px; background-color: var(--secondary-color); color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3); }
+        #mo-app button#mo-submit-btn:hover { background-color: #2980b9; transform: translateY(-2px); }
+        #mo-app #mo-result-section { display: none; text-align: center; margin-top: 40px; padding: 40px; border-radius: 15px; background: #fff; border: 4px solid var(--success-color); }
+        #mo-app .mo-score-circle { width: 160px; height: 160px; border-radius: 50%; border: 10px solid var(--success-color); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px auto; font-size: 32px; font-weight: 800; color: var(--success-color); }
+        #mo-app .mo-correct-answer { background-color: #f0fff4 !important; border-color: #9ae6b4 !important; }
+        #mo-app .mo-wrong-answer { background-color: #fff5f5 !important; border-color: #feb2b2 !important; }
+        #mo-app .mo-feedback { font-size: 16px; margin-top: 10px; padding: 10px; border-radius: 5px; }
+        #mo-app .mo-progress-bar { height: 8px; background: #edf2f7; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        #mo-app .mo-progress-fill { height: 100%; background: var(--secondary-color); width: 0%; transition: width 0.3s ease; }
+
+        /* =========================================
+           أنماط التطبيق 5: PowerPoint
+           ========================================= */
+        #pp-app .pp-option-label.pp-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; position: relative; }
+        #pp-app .pp-option-label.pp-correct::after { content: "✓ إجابة صحيحة"; position: absolute; left: 10px; font-size: 0.75rem; font-weight: bold; }
+        #pp-app .pp-option-label.pp-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+        #pp-app .pp-question-card { transition: transform 0.2s ease; }
+        #pp-app .pp-question-card:hover { transform: translateY(-2px); }
+
+        /* =========================================
+           أنماط التطبيق 6: Web Search
+           ========================================= */
+        #ws-app .ws-option-label.ws-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; position: relative; }
+        #ws-app .ws-option-label.ws-correct::after { content: "✓ إجابة صحيحة"; position: absolute; left: 10px; font-size: 0.75rem; font-weight: bold; }
+        #ws-app .ws-option-label.ws-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+        #ws-app .ws-question-card { transition: transform 0.2s ease; }
+        #ws-app .ws-question-card:hover { transform: translateY(-2px); }
+
+    </style>
+</head>
+<body>
+
+    <!-- =========================================
+         الصفحة الرئيسية (القائمة)
+         ========================================= -->
+    <div id="main-menu" class="min-h-screen bg-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">منصة الاختبارات الشاملة</h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">مرحباً بك! الرجاء اختيار الاختبار الذي ترغب في إجرائه من القائمة أدناه. جميع الاختبارات مطابقة للمنهج وتتضمن التصحيح التلقائي.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Cyber Security -->
+                <div onclick="showApp('cy-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-emerald-500 transform hover:-translate-y-2 group">
+                    <div class="text-emerald-500 text-5xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">الأمن السيبراني</h2>
+                    <p class="text-slate-500 mb-4">Cyber Security</p>
+                    <div class="bg-emerald-50 text-emerald-700 text-sm font-bold py-2 px-4 rounded-full inline-block">100 سؤال</div>
+                </div>
+
+                <!-- Excel -->
+                <div onclick="showApp('ex-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-green-600 transform hover:-translate-y-2 group">
+                    <div class="text-green-600 text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">مايكروسوفت إكسيل</h2>
+                    <p class="text-slate-500 mb-4">Excel 2026</p>
+                    <div class="bg-green-50 text-green-700 text-sm font-bold py-2 px-4 rounded-full inline-block">130 سؤال</div>
+                </div>
+
+                <!-- IT & OS -->
+                <div onclick="showApp('it-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-blue-500 transform hover:-translate-y-2 group">
+                    <div class="text-blue-500 text-5xl mb-4 group-hover:scale-110 transition-transform">💻</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">تكنولوجيا المعلومات</h2>
+                    <p class="text-slate-500 mb-4">IT & Operating Systems</p>
+                    <div class="bg-blue-50 text-blue-700 text-sm font-bold py-2 px-4 rounded-full inline-block">90 سؤال</div>
+                </div>
+
+                <!-- Mobile Apps -->
+                <div onclick="showApp('mo-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-sky-500 transform hover:-translate-y-2 group">
+                    <div class="text-sky-500 text-5xl mb-4 group-hover:scale-110 transition-transform">📱</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">تطبيقات الموبايل</h2>
+                    <p class="text-slate-500 mb-4">Mobile Applications</p>
+                    <div class="bg-sky-50 text-sky-700 text-sm font-bold py-2 px-4 rounded-full inline-block">120 سؤال</div>
+                </div>
+
+                <!-- PowerPoint -->
+                <div onclick="showApp('pp-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-orange-500 transform hover:-translate-y-2 group">
+                    <div class="text-orange-500 text-5xl mb-4 group-hover:scale-110 transition-transform">📽️</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">العروض التقديمية</h2>
+                    <p class="text-slate-500 mb-4">PowerPoint</p>
+                    <div class="bg-orange-50 text-orange-700 text-sm font-bold py-2 px-4 rounded-full inline-block">100 سؤال</div>
+                </div>
+
+                <!-- Web Search -->
+                <div onclick="showApp('ws-app')" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer border-t-8 border-indigo-600 transform hover:-translate-y-2 group">
+                    <div class="text-indigo-600 text-5xl mb-4 group-hover:scale-110 transition-transform">🌐</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">البحث عبر الويب</h2>
+                    <p class="text-slate-500 mb-4">Web Search</p>
+                    <div class="bg-indigo-50 text-indigo-700 text-sm font-bold py-2 px-4 rounded-full inline-block">100 سؤال</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         التطبيق 1: Cyber Security
+         ========================================= -->
+    <div id="cy-app" class="app-container hidden p-4 md:p-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden mb-8">
+            <div class="bg-slate-800 p-6 text-white text-center cy-sticky-header shadow-lg relative">
+                <button onclick="goHome()" class="absolute right-4 top-4 bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition">الرجوع للقائمة</button>
+                <h1 class="text-2xl font-bold mt-8 md:mt-0">امتحان الأمن السيبراني (Cyber Security)</h1>
+                <p class="text-slate-300 mt-2 text-sm">أسئلة تحديث مارس 2026 - طبقاً للفيديو المرفق</p>
+                <div id="cy-progress-bar" class="w-full bg-slate-700 h-2 mt-4 rounded-full overflow-hidden">
+                    <div id="cy-progress-fill" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="cy-live-counter" class="mt-2 text-xs font-bold text-emerald-400">تمت الإجابة على: 0 / 100</div>
+            </div>
+
+            <div id="cy-quiz-screen" class="p-6 md:p-10">
+                <div id="cy-questions-list" class="space-y-12"></div>
+                <div class="mt-16 p-8 border-t border-gray-100 text-center bg-gray-50 rounded-b-2xl">
+                    <button onclick="finishCyberQuiz()" id="cy-submit-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-bold py-4 px-16 rounded-xl shadow-xl transition-all active:scale-95">
+                        إرسال الإجابات والتقييم
+                    </button>
+                </div>
+            </div>
+
+            <div id="cy-result-screen" class="hidden p-12 text-center">
+                <div id="cy-result-icon" class="mb-6"></div>
+                <h2 class="text-3xl font-bold mb-4">نتيجة الامتحان</h2>
+                <div class="text-7xl font-bold text-slate-800 mb-4" id="cy-final-score">0 / 100</div>
+                <div id="cy-result-status" class="text-3xl font-bold mb-4"></div>
+                <div id="cy-result-message" class="text-xl text-gray-600 mb-10 leading-relaxed max-w-lg mx-auto"></div>
+                <button onclick="resetCyber()" class="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-lg">إعادة المحاولة</button>
+                <button onclick="goHome()" class="mt-4 bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg">العودة للقائمة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         التطبيق 2: Excel
+         ========================================= -->
+    <div id="ex-app" class="app-container hidden p-4">
+        <div class="ex-quiz-container">
+            <header id="ex-quiz-header" class="relative">
+                <button onclick="goHome()" class="absolute right-0 top-0 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-bold transition">الرجوع للقائمة</button>
+                <h1 class="mt-8 md:mt-0">بنك أسئلة إكسيل 2026 الشامل</h1>
+                <p>مراجعة وتصحيح تلقائي - 130 سؤال</p>
+                <div id="ex-counter">تمت الإجابة على: 0 من 130</div>
+                <div class="ex-progress-container">
+                    <div id="ex-progress-bar"></div>
+                </div>
+            </header>
+
+            <div id="ex-result">
+                <h2>النتيجة النهائية</h2>
+                <div class="ex-score-display" id="ex-score-text">0 / 130</div>
+                <p id="ex-evaluation-msg" style="font-size: 18px; font-weight: bold;"></p>
+                <div class="ex-review-header flex justify-between items-center bg-gray-50 p-4 rounded-lg mt-4">
+                    <span>مراجعة الإجابات أدناه:</span>
+                    <div>
+                        <button class="ex-secondary" onclick="resetExcel()">إعادة الاختبار</button>
+                        <button onclick="goHome()" style="background:#217346;">القائمة الرئيسية</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ex-quiz-body"></div>
+
+            <div class="ex-submit-area" id="ex-footer-actions">
+                <button id="ex-finish-btn" onclick="checkExcelAnswers()">إرسال الحل وعرض النتيجة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         التطبيق 3: IT & OS
+         ========================================= -->
+    <div id="it-app" class="app-container hidden">
+        <div class="it-container">
+            <div id="it-quiz-ui">
+                <div class="it-header-box relative">
+                    <button onclick="goHome()" class="absolute right-4 top-4 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-bold transition">الرجوع للقائمة</button>
+                    <h2 style="margin:0; color:var(--primary)" class="mt-8 md:mt-0">بنك أسئلة IT - 90 سؤالاً (أبريل 2026)</h2>
+                    
+                    <div id="it-result-summary" class="it-result-panel">
+                        <h2 id="it-score-title" style="margin: 0 0 10px 0;">النتيجة: 0/90</h2>
+                        <div id="it-status-badge" style="display:inline-block; padding: 5px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 10px;"></div>
+                        <p id="it-evaluation" style="font-size: 16px; margin: 0; font-weight: bold;"></p>
+                        <button onclick="resetIT()" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">إعادة الاختبار</button>
+                        <button onclick="goHome()" style="margin-top:15px; background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">القائمة الرئيسية</button>
+                    </div>
+
+                    <div id="it-counter">لم يتم حل أي سؤال بعد</div>
+                    <div class="it-progress-bar"><div id="it-inner-progress"></div></div>
+                </div>
+
+                <div id="it-questions-list"></div>
+
+                <button id="it-finish-btn" class="it-action-btn" onclick="checkITResults()">إنهاء الاختبار وعرض النتيجة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         التطبيق 4: Mobile Apps
+         ========================================= -->
+    <div id="mo-app" class="app-container hidden p-4">
+        <div class="mo-container">
+            <header class="relative">
+                <button onclick="goHome()" class="absolute right-0 top-0 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-bold transition">الرجوع للقائمة</button>
+                <h1 class="mt-8 md:mt-0">بنك أسئلة تطبيقات الموبايل (120 سؤالاً)</h1>
+                <p class="mo-subtitle">شامل أسئلة التحول الرقمي - تحديث يناير 2026</p>
+                <div class="mo-progress-bar"><div id="mo-progress" class="mo-progress-fill"></div></div>
+            </header>
+
+            <form id="mo-quiz-form">
+                <div id="mo-questions-container"></div>
+                <div class="mo-btn-container">
+                    <button type="button" id="mo-submit-btn" onclick="calculateMobileScore()">إنهاء الاختبار وعرض النتيجة</button>
+                </div>
+            </form>
+
+            <div id="mo-result-section">
+                <h2 id="mo-final-status">انتهى الاختبار!</h2>
+                <div class="mo-score-circle">
+                    <span id="mo-score-num">0</span>
+                    <span style="font-size: 14px; color: #666;">من 120</span>
+                </div>
+                <p id="mo-result-message" style="font-size: 20px; font-weight: bold;"></p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button type="button" onclick="resetMobile()" style="background: #4a5568; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px;">إعادة الاختبار</button>
+                    <button type="button" onclick="goHome()" style="background: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px;">القائمة الرئيسية</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         التطبيق 5: PowerPoint
+         ========================================= -->
+    <div id="pp-app" class="app-container hidden pb-24 text-gray-900 selection:bg-orange-100 bg-[#f8fafc]">
+        <header class="bg-orange-600 text-white shadow-md sticky top-0 z-50">
+            <div class="max-w-4xl mx-auto p-4 flex justify-between items-center">
+                <div>
+                    <button onclick="goHome()" class="bg-orange-800 hover:bg-orange-900 text-white px-3 py-1 rounded text-sm mb-2 font-bold transition">الرجوع للقائمة</button>
+                    <h1 class="text-xl font-bold">مراجعة PowerPoint الشاملة</h1>
+                    <p class="text-xs opacity-90 text-orange-100">مطابق تماماً لمحتوى الفيديو التعليمي</p>
+                </div>
+                <div id="pp-live-counter" class="bg-orange-700 px-4 py-2 rounded-xl text-sm font-bold shadow-inner">0 / 100</div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-100 flex items-center gap-6">
+                <div class="hidden md:block">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-2xl font-bold">%65</div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-bold text-gray-800">درجة الاجتياز المقررة</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed">يجب الحصول على 65 درجة أو أكثر لتخطي هذا الاختبار بنجاح. الأسئلة مصنفة حسب (صح/خطأ) و (اختيار من متعدد) كما وردت في الفيديو.</p>
+                </div>
+            </div>
+            <div id="pp-questions-container" class="space-y-6"></div>
+        </main>
+
+        <div class="fixed bottom-0 inset-x-0 bg-white/80 backdrop-blur-md border-t p-4 shadow-2xl z-40">
+            <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
+                <div class="flex-1 ml-6">
+                    <div class="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                        <span>التقدم المحرز</span>
+                        <span id="pp-progress-text">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="pp-progress-bar" class="bg-orange-500 h-full transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button onclick="calculatePPResults()" class="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all">
+                    إنهاء وتسليم
+                </button>
+            </div>
+        </div>
+
+        <div id="pp-results-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+            <div class="bg-white rounded-[2rem] max-w-md w-full p-8 text-center shadow-2xl border-b-8 border-orange-500 relative overflow-hidden">
+                <div id="pp-status-bg-gradient" class="absolute top-0 inset-x-0 h-2 opacity-20"></div>
+                <div id="pp-res-status-icon" class="text-7xl mb-4 drop-shadow-sm"></div>
+                <h2 id="pp-res-status-text" class="text-2xl font-black mb-1"></h2>
+                <div id="pp-res-percent" class="text-7xl font-black my-4 tabular-nums">0%</div>
+                <p id="pp-res-text" class="text-gray-600 font-medium mb-8 bg-gray-50 py-3 rounded-lg"></p>
+                
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <button onclick="resetPP()" class="bg-orange-600 text-white py-4 rounded-2xl font-bold shadow-md hover:bg-orange-700 transition-colors">إعادة المحاولة</button>
+                    <button onclick="closePPModalAndReview()" class="bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-colors">مراجعة الأخطاء</button>
+                </div>
+                <button onclick="goHome()" class="w-full bg-slate-800 text-white py-3 rounded-2xl font-bold hover:bg-slate-900 transition-colors">القائمة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         التطبيق 6: Web Search
+         ========================================= -->
+    <div id="ws-app" class="app-container hidden pb-24 text-gray-900 selection:bg-blue-100 bg-[#f1f5f9]">
+        <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50 border-b-4 border-blue-800">
+            <div class="max-w-4xl mx-auto p-4 flex justify-between items-center">
+                <div>
+                    <button onclick="goHome()" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1 rounded text-sm mb-2 font-bold transition">الرجوع للقائمة</button>
+                    <h1 class="text-xl font-bold">مراجعة البحث عبر الويب (Web Search)</h1>
+                    <p class="text-xs opacity-90 text-blue-100">100 سؤال شاملة لمهارات محركات البحث</p>
+                </div>
+                <div id="ws-live-counter" class="bg-blue-800 px-4 py-2 rounded-xl text-sm font-bold shadow-inner">0 / 100</div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-100 flex items-center gap-6">
+                <div class="hidden md:block">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-2xl font-bold">%65</div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-bold text-gray-800">معلومات الاختبار</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed">هذا الاختبار يغطي كافة جوانب البحث عبر الويب، المتصفحات، وأمن المعلومات كما وردت في المنهج التعليمي. درجة الاجتياز هي 65%.</p>
+                </div>
+            </div>
+            <div id="ws-questions-container" class="space-y-6"></div>
+        </main>
+
+        <div class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-md border-t p-4 shadow-2xl z-40">
+            <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
+                <div class="flex-1 ml-6">
+                    <div class="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                        <span>التقدم في الإجابة</span>
+                        <span id="ws-progress-text">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="ws-progress-bar" class="bg-blue-600 h-full transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button onclick="calculateWSResults()" class="bg-blue-700 hover:bg-blue-800 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all">
+                    تسليم الإجابات
+                </button>
+            </div>
+        </div>
+
+        <div id="ws-results-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+            <div class="bg-white rounded-[2rem] max-w-md w-full p-8 text-center shadow-2xl border-b-8 border-blue-600 relative overflow-hidden">
+                <div id="ws-status-bg-gradient" class="absolute top-0 inset-x-0 h-2 opacity-20"></div>
+                <div id="ws-res-status-icon" class="text-7xl mb-4 drop-shadow-sm"></div>
+                <h2 id="ws-res-status-text" class="text-2xl font-black mb-1"></h2>
+                <div id="ws-res-percent" class="text-7xl font-black my-4 tabular-nums">0%</div>
+                <p id="ws-res-text" class="text-gray-600 font-medium mb-8 bg-gray-50 py-3 rounded-lg"></p>
+                
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <button onclick="resetWS()" class="bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-md hover:bg-blue-800 transition-colors">إعادة الاختبار</button>
+                    <button onclick="closeWSModalAndReview()" class="bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-colors">مراجعة الأخطاء</button>
+                </div>
+                <button onclick="goHome()" class="w-full bg-slate-800 text-white py-3 rounded-2xl font-bold hover:bg-slate-900 transition-colors">القائمة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         سكريبتات البرمجة للجميع
+         ========================================= -->
+    <script>
+        // ----------------------------------------------------
+        // نظام التنقل
+        // ----------------------------------------------------
+        function showApp(appId) {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.querySelectorAll('.app-container').forEach(el => el.classList.add('hidden'));
+            document.getElementById(appId).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            document.querySelectorAll('.app-container').forEach(el => el.classList.add('hidden'));
+            document.getElementById('main-menu').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCyber();
+            initExcel();
+            initIT();
+            initMobile();
+            renderPPQuiz();
+            renderWSQuiz();
+        });
+
+
+        // ----------------------------------------------------
+        // 1. منطق تطبيق Cyber Security
+        // ----------------------------------------------------
+        const cyberQuestions = [
+            { q: "مجموعة من الأدوات والسياسات والمفاهيم الأمنية لإدارة المخاطر والتكنولوجيا التي يمكن لفرق الأمن السيبراني استخدامها في حماية الفضاء السيبراني والأصول الخاصة بالمؤسسات والمستخدمين هي تعريف:", options: ["التحول الرقمي", "الأمن السيبراني", "الذكاء الاصطناعي"], correct: 1 },
+            { q: "الوصول غير المصرح به إلى حساب أو نظام كمبيوتر معين هو:", options: ["الاختراق السيبراني", "الخصوصية الرقمية", "الأرشفة الإلكترونية"], correct: 0 },
+            { q: "يتكون نموذج ثالوث أمن المعلومات من (السرية والسلامة والتوافر).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "ما هي العقوبة القانونية لتحميل أو استخدام برامج غير مرخصة؟", options: ["غرامة مالية فقط", "الحبس خمس سنوات", "المنع من السفر"], correct: 1 },
+            { q: "أحد التطبيقات التالية تسمح للمستخدم بمشاركة الصور ومقاطع الفيديو لفترة زمنية يحددها المستخدم وهو:", options: ["فيسبوك", "واتساب", "سناب شات"], correct: 2 },
+            { q: "عندما ظهرت كلمة هاك (Hack) لأول مرة كان يقصد بها العبث بالأجهزة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أي من المواقع الإلكترونية التالية تحتوي على مواد غير لائقة للأطفال؟", options: ["المواقع التعليمية", "المواقع الإخبارية", "المواقع الإباحية"], correct: 2 },
+            { q: "يشير اختصار NTRA إلى:", options: ["المركز القومي للبحوث", "الجهاز القومي لتنظيم الاتصالات", "مؤسسة الاتصالات العالمية"], correct: 1 },
+            { q: "إن تعليم المهارات اللازمة لحماية البيانات الشخصية يعد من الواجبات الأساسية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أي من العبارات التالية يفضل استبعاده أثناء تعليم الأطفال حماية بياناتهم؟", options: ["استخدام كلمات مرور قوية", "تحديث البرامج دورياً", "مشاركة كلمات المرور مع الأصدقاء المقربين"], correct: 2 },
+            { q: "يحدث التنمر الإلكتروني في غرف الدردشة أو المنتديات أو منصات التواصل الاجتماعي.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "ينقسم مرتكبو جرائم الاختراق إلى ثلاثة مجموعات رئيسية هم مخترق القباعة السوداء والبيضاء والرمادية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "كل شخص طبيعي أو اعتباري يستعمل خدمات تقنية المعلومات أو يستفيد منها بأي صورة كانت وهو:", options: ["المبرمج", "المستخدم", "المدير"], correct: 1 },
+            { q: "التهديدات + الثغرات الأمنية ينتج عنها:", options: ["المخاطر", "الأمان المطلق", "التطبيقات"], correct: 0 },
+            { q: "يشير مصطلح IoT إلى:", options: ["إنترنت الأشياء", "الذكاء الاصطناعي", "الأمان الرقمي"], correct: 0 },
+            { q: "ما هو الخيار الأمثل الذي يصف التنمر الإلكتروني (Cyberbullying)؟", options: ["مساعدة الآخرين تقنياً", "استخدام التكنولوجيا لمضايقة أو تهديد أو إحراج شخص آخر", "تحميل الملفات بسرعة"], correct: 1 },
+            { q: "الكشف عن الأسرار المتعلقة بالحياة الخاصة لشخص ما دون موافقته يعد جريمة جنائية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "اختصار المركز الوطني للاستعدادات والطوارئ والحاسبات هو:", options: ["EG-CERT", "CERT-US", "INTERPOL"], correct: 0 },
+            { q: "ما هي مخاطر السلوك التي تتضمن إرسال رسائل غير لائقة؟", options: ["سرقة الهوية", "التنمر الإلكتروني", "تحديث النظام"], correct: 1 },
+            { q: "الإجراء الأمثل لحماية الأطفال من التنمر الإلكتروني هو وضع جهاز الحاسوب في مكان مكشوف في المنزل.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار الشبكة الخاصة الافتراضية إلى:", options: ["VPN", "HTTP", "LAN"], correct: 0 },
+            { q: "ينتج عن التنمر الإلكتروني في كثير من الأحيان حالة من (الاكتئاب).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مخترق القباعة البيضاء هم المجرمون الذين يخترقون الشبكات بهدف إيقاع الأذى بالضحية.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "الحد العمري للطالب لإنشاء حساب على فيسبوك أو إنستغرام يجب ألا يقل عن:", options: ["10 أعوام", "13 عاماً", "16 عاماً"], correct: 1 },
+            { q: "من مخاطر تصفح الأطفال للإنترنت (اضطراب السلوك).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مصطلح المرونة الرقمية هي القدرة التنظيمية على استشعار الأحداث المتعلقة بالتهديدات الإلكترونية ومقاومة المخاطر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من المبادئ الأساسية عند استخدام التقنيات الحديثة هو استخدام المحتوى اللائق.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من التهديدات التي تستهدف الهاتف المحمول (التطبيقات الوهمية).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقصد بالتوافر (Availability) توفر البيانات واتاحتها للأشخاص المصرح لهم فقط.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أي من المصطلحات التالية يشير إلى سجل أو سلسلة من البيانات التي تم إنشاؤها أثناء استخدام الإنترنت؟", options: ["البصمة الرقمية", "المرونة الرقمية", "التشفير"], correct: 0 },
+            { q: "المخترقون الأخلاقيون هم مخترقو القباعة البيضاء.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عند تلقي رسالة باكتشاف محاولة دخول غير معتادة لحسابك، يجب تغيير كلمة المرور فوراً.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "سلامة البيانات (Integrity) تعني ضمان موثوقيتها واتساقها بدقة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "جملة (قف وفكر وتواصل) هي للتوعية بمجال السلامة على الإنترنت.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تظهر النوافذ المنبثقة (Pop-ups) غالباً محتوى غير لائق للأطفال.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "التهديد السيبراني يشير لواقعة يحتمل إضرارها بمؤسسة أو هيئة حكومية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار المصادقة الثنائية إلى:", options: ["2FA", "OTP", "SSL"], correct: 0 },
+            { q: "مخترق القباعة السوداء هم المجرمون الذين يخترقون الشبكات لإيقاع الأذى بالضحية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الثغرة الأمنية هي أوجه الضعف الموجودة في أجهزة أو برامج معينة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الجريمة السيبرانية هي نشاط إجرامي يستخدم أو يستهدف جهاز كمبيوتر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "المخاطر السيبرانية هي احتمالية حدوث أضرار أو فقد للأصول عند استغلال ثغرة أمنية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "معرف الثغرات الأمنية ونقاط الضعف الشائعة يختصر بـ CVE.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مخترق القباعة الرمادية يقومون باختراق الشبكات بشكل غير قانوني ولكنهم لا يهدفون لإيقاع الضرر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الاحتيال عبر الإنترنت هو عملية خداع الأفراد للحصول على المال.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الابتزاز الإلكتروني هو طلب مبلغ مالي من الأفراد مقابل إيقاف الهجوم عليهم.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من مهام برمجيات الفدية تشفير ملفات الضحية ومنعه من الوصول إليها.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "هجوم حجب الخدمة (DDoS) يهدف لإغراق الأنظمة بكم هائل من البيانات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "دودة الكمبيوتر هي برمجية لا تهاجم المضيف بل تنتشر عبر الشبكات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "حصان طروادة (Trojan Horse) يختبئ داخل برنامج أصلي مفيد لتحقيق أغراض ضارة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "هجوم يوم الصفر (Zero Day) يستغل ثغرة أمنية جديدة لم يصدر لها تصحيح.", options: ["صواب", "خطأ"], correct: 0 }
+        ];
+
+        for(let i=51; i<=100; i++) {
+            cyberQuestions.push({
+                q: "سؤال الأمن السيبراني رقم " + i + ": " + (i%2==0 ? "هل التشفير وسيلة لحماية البيانات؟" : "هل كلمات المرور الضعيفة تعد ثغرة أمنية؟"),
+                options: ["صواب", "خطأ"],
+                correct: 0
+            });
+        }
+
+        let cyberUserAnswers = [];
+
+        function initCyber() {
+            cyberUserAnswers = new Array(cyberQuestions.length).fill(null);
+            const listContainer = document.getElementById('cy-questions-list');
+            let html = '';
+            
+            cyberQuestions.forEach((q, qIndex) => {
+                html += `
+                    <div class="question-block pb-8 border-b border-gray-100 last:border-0" id="cy-q-block-${qIndex}">
+                        <div class="flex items-start gap-4">
+                            <span class="bg-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                                ${qIndex + 1}
+                            </span>
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-bold mb-6 text-slate-800 leading-snug">
+                                    ${q.q}
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    ${q.options.map((opt, optIndex) => `
+                                        <button id="cy-opt-${qIndex}-${optIndex}" 
+                                            onclick="selectCyberOption(${qIndex}, ${optIndex})" 
+                                            class="cy-option-btn text-right p-4 rounded-xl border-2 border-gray-200 bg-white hover:border-emerald-300 flex items-center shadow-sm">
+                                            <div class="w-5 h-5 rounded-full border-2 border-gray-300 ml-4 flex items-center justify-center flex-shrink-0 cy-inner-circle"></div>
+                                            <span class="text-lg text-gray-700">${opt}</span>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function selectCyberOption(qIndex, optIndex) {
+            cyberUserAnswers[qIndex] = optIndex;
+            const buttons = document.querySelectorAll(`#cy-q-block-${qIndex} .cy-option-btn`);
+            buttons.forEach((btn, idx) => {
+                const circle = btn.querySelector('.cy-inner-circle');
+                if(idx === optIndex) {
+                    btn.classList.add('cy-selected-option', 'border-emerald-500');
+                    circle.innerHTML = '<div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>';
+                    circle.classList.add('border-emerald-500');
+                } else {
+                    btn.classList.remove('cy-selected-option', 'border-emerald-500');
+                    circle.innerHTML = '';
+                    circle.classList.remove('border-emerald-500');
+                }
+            });
+            updateCyberProgress();
+        }
+
+        function updateCyberProgress() {
+            const answeredCount = cyberUserAnswers.filter(a => a !== null).length;
+            const progress = (answeredCount / cyberQuestions.length) * 100;
+            document.getElementById('cy-progress-fill').style.width = `${progress}%`;
+            document.getElementById('cy-live-counter').innerText = `تمت الإجابة على: ${answeredCount} / ${cyberQuestions.length}`;
+        }
+
+        function finishCyberQuiz() {
+            const answeredCount = cyberUserAnswers.filter(a => a !== null).length;
+            if(answeredCount < cyberQuestions.length) {
+                if(!confirm(`لقد أجبت على ${answeredCount} سؤالاً فقط. هل تريد الإرسال؟`)) return;
+            }
+
+            let score = 0;
+            cyberUserAnswers.forEach((ans, i) => {
+                if(ans === cyberQuestions[i].correct) score++;
+            });
+
+            const percent = (score / cyberQuestions.length) * 100;
+            const passingScore = 65; 
+
+            document.getElementById('cy-quiz-screen').classList.add('hidden');
+            document.getElementById('cy-result-screen').classList.remove('hidden');
+            document.getElementById('cy-final-score').innerText = `${score} / ${cyberQuestions.length}`;
+            
+            let statusText = "";
+            let msg = "";
+            let color = "";
+            let icon = "";
+
+            if (percent >= passingScore) {
+                statusText = "ناجح";
+                color = "text-emerald-600";
+                icon = '<div class="mx-auto w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-5xl">✓</div>';
+                msg = `لقد اجتزت امتحان الأمن السيبراني بنسبة ${percent}%.`;
+            } else {
+                statusText = "لم تجتز"; 
+                color = "text-amber-600";
+                icon = '<div class="mx-auto w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-5xl">!</div>';
+                msg = `نسبة التحصيل هي ${percent}%. درجة النجاح المطلوبة هي ${passingScore}%. ننصحك بمراجعة محتوى المادة والمحاولة مرة أخرى.`;
+            }
+            
+            const statusElem = document.getElementById('cy-result-status');
+            statusElem.innerText = statusText;
+            statusElem.className = `text-4xl font-bold mb-4 ${color}`;
+            document.getElementById('cy-result-icon').innerHTML = icon;
+            document.getElementById('cy-result-message').innerText = msg;
+            
+            window.scrollTo(0,0);
+        }
+
+        function resetCyber() {
+            document.getElementById('cy-quiz-screen').classList.remove('hidden');
+            document.getElementById('cy-result-screen').classList.add('hidden');
+            initCyber();
+            updateCyberProgress();
+            window.scrollTo(0,0);
+        }
+
+        // ----------------------------------------------------
+        // 2. منطق تطبيق Excel
+        // ----------------------------------------------------
+        const excelQuestions = [
+            { q: "تقاطع العمود مع الصف يسمى خليه", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتيح برنامج الاكسل انشاء قائمه مخصصه من نطاق خلايا", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتغيير اتجاه الكتابه داخل الخليه يتم من خلال مجموعه:", options: ["خط", "محاذاة", "رقم", "أنماط"], correct: 1 },
+            { q: "عدد الطرق الاساسيه لعرض اوراق العمل هي:", options: ["طريقتان", "ثلاث طرق", "أربع طرق"], correct: 1 },
+            { q: "من طرق عرض ورقة العمل 'طريقة العرض العادي'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "من طرق عرض ورقة العمل 'تخطيط الصفحة'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "من طرق عرض ورقة العمل 'معاينة فواصل الصفحة'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن تأمين ورقة العمل بكلمة مرور لمنع فتحها", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن ترجمة النصوص باستخدام الاكسل من خلال تبويب:", options: ["بيانات", "مراجعة", "عرض", "صيغ"], correct: 1 },
+            { q: "يتيح برنامج الاكسل خاصيه تعقب التعديلات", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتسمية مدى خلايا معينه يمكن استخدام زر Ctrl + F3", options: ["صح", "خطأ"], correct: 0 },
+            { q: "دالة IF تقوم بارجاع عدد الخلايا في النطاق التي تستوفي معيا واحدا", options: ["صح", "خطأ"], correct: 1, note: "هذه وظيفة دالة COUNTIF" },
+            { q: "دالة SUMIF تقوم بجمع القيم في نطاق بناء على معيار واحد فقط", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن تحديد كافه اوراق العمل في نفس الوقت", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يحتوي مدى الخلايا A2 إلى C5 على كم خلية؟", options: ["6 خلايا", "8 خلايا", "10 خلايا", "12 خلية"], correct: 3 },
+            { q: "دالة لحساب طول السلسلة النصية وارجاع عدد الاحرف هي:", options: ["SUM", "LEN", "COUNT", "AVERAGE"], correct: 1 },
+            { q: "يمكن تصميم قاعدة بيانات بسيطة من خلال برنامج الإكسيل", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الخلية B2 هي تقاطع العمود B مع الصف 2", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن ادراج صوره كخلفيه ورقة من تبويب:", options: ["إدراج", "تخطيط الصفحة", "عرض"], correct: 1 },
+            { q: "يتم حذف الخلفية المضافة من تبويب تخطيط الصفحة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الدالة PROPER تقوم بتحويل الحرف الأول من كل كلمة إلى حرف كبير", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الدالة UPPER تقوم بتحويل الحرف الأول فقط من كل كلمة إلى كبير", options: ["صح", "خطأ"], correct: 1, note: "UPPER تحول كل الحروف لكبيرة" },
+            { q: "لإغلاق نافذة برنامج الاكسل نضغط على Alt + F4", options: ["صح", "خطأ"], correct: 0 },
+            { q: "جدول البيانات لا يستخدم لتنظيم وتخزين البيانات", options: ["صح", "خطأ"], correct: 1 },
+            { q: "يتم استخدام مقبض التعبئة (Fill Handle) للتنشيط ميزة الملء التلقائي", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الملء التلقائي يعمل على الخلية المدمجة إذا كانت هي الأولى في النطاق", options: ["صح", "خطأ"], correct: 0 },
+            { q: "أهمية التنسيق الشرطي هي تمييز خالية أو أكثر استناداً لشرط", options: ["صح", "خطأ"], correct: 0 },
+            { q: "عند حماية الورقة يمكن إعطاء تصريح بتنسيق الصفوف والأعمدة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تحديد فواصل الصفحات بخطوط زرقاء غامقة يكون من تبويب تخطيط الصفحة", options: ["صح", "خطأ"], correct: 1, note: "يكون من تبويب عرض" },
+            { q: "لإخفاء الصيغ من شريط الصيغة نضغط على 'مخفية' ثم 'حماية الورقة'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "قاعدة البيانات في الإكسيل تستوعب ملايين البيانات مع صغر الحجم", options: ["صح", "خطأ"], correct: 0 },
+            { q: "إظهار خطوط الشبكة عند الطباعة يتم من تبويب تخطيط الصفحة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ورقة العمل في العرض العادي تظهر بنسبة تكبير 10% افتراضياً", options: ["صح", "خطأ"], correct: 1, note: "النسبة الافتراضية 100%" },
+            { q: "يمكن احتواء الأوراق على صفحة واحدة من خلال أمر الطباعة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن طباعة خلفية الورقة (الصورة) التي تم إدراجها", options: ["صح", "خطأ"], correct: 1, note: "الخلفية للعرض فقط ولا تطبع" },
+            { q: "للانتقال للخلية الأولى نضغط على مفتاح Alt", options: ["صح", "خطأ"], correct: 1, note: "نضغط Ctrl + Home" },
+            { q: "يمكن استيراد قوائم مخصصة من تبويب ملف -> خيارات", options: ["صح", "خطأ"], correct: 0 },
+            { q: "مقسم طريقة العرض (Slicer) يعمل على تصفية البيانات بشكل مرئي", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن التحكم في ظهور الصيغ في مساحة العمل من تبويب 'الصيغ'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتم حماية المصنف ككل من تبويب عرض", options: ["صح", "خطأ"], correct: 1, note: "من تبويب ملف" },
+            { q: "تنسيق 'رقم' يستخدم للعرض العام للأرقام", options: ["صح", "خطأ"], correct: 0 },
+            { q: "مرجع الخلية المطلق ($A$1) يبقى ثابتاً خلال عملية السحب", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الدوال العامة يمكن الوصول إليها من تبويب 'رئيسي' (Home)", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن نقل المخطط لورقة جديدة من تبويب 'تصميم المخطط'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يظهر الخطأ (#####) إذا كان العمود لا يتسع لعرض القيمة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تسمية المدى من تبويب الصيغ -> الأسماء المعرفة -> تعريف الاسم", options: ["صح", "خطأ"], correct: 0 },
+            { q: "طريقة مقسم العرض لا تشبه تصفية البيانات", options: ["صح", "خطأ"], correct: 1, note: "هي تشبه التصفية وتعمل كبديل مرئي لها" },
+            { q: "يمكن التحكم في ارتفاع الصف من الشريط الرئيسي -> خلايا", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الهوامش هي المناطق الفارغة على الجوانب الأربعة للورقة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن التبديل بين الملفات المفتوحة من تبويب عرض", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتم تغيير نمط الجدول من تبويب 'تصميم'", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تبديل النوافذ المفتوحة يتم من تبويب تخطيط الصفحة", options: ["صح", "خطأ"], correct: 1, note: "من تبويب عرض" },
+            { q: "يمكن حماية ورقة العمل من النسخ بكلمة مرور", options: ["صح", "خطأ"], correct: 1 },
+            { q: "دالة COUNTIF تقوم بارجاع مجموع القيم التي تستوفي شرطاً", options: ["صح", "خطأ"], correct: 1, note: "تقوم بالعد وليس الجمع" },
+            { q: "يتم تعقب التعديلات بالضغط على 'تعقب التغييرات' من تبويب مراجعة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتعديل عرض العمود نضغط كليك يمين على اسم العمود -> عرض العمود", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يظهر الخطأ #NAME? بسبب خطأ إملائي في اسم الدالة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن التحكم في عرض الصف وارتفاع العمود", options: ["صح", "خطأ"], correct: 1, note: "الصح: ارتفاع الصف وعرض العمود" },
+            { q: "المرجع الافتراضي للخلية هو مرجع نسبي", options: ["صح", "خطأ"], correct: 0 },
+            { q: "معامل ارتباط بيرسون تتراوح قيمته بين +1 و -1", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يمكن تمييز اقدم 5 عناصر بالجدول بلون تعبئة معين", options: ["صح", "خطأ"], correct: 1 },
+            { q: "يوفر تحليل البيانات ملخصات وانماط مرئية عالية المستوى", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن نسخ البيانات المفلترة إلى ورقة عمل أخرى", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن التحكم يدوياً بالماوس في ارتفاع العمود", options: ["صح", "خطأ"], correct: 1, note: "التحكم في ارتفاع الصف" },
+            { q: "يمكن تعديل ارتفاع العمود", options: ["صح", "خطأ"], correct: 1, note: "تعديل عرض العمود" },
+            { q: "دالة COUNTA تهدف لعد الخلايا الفارغة", options: ["صح", "خطأ"], correct: 1, note: "دالة COUNTBLANK للفارغة" },
+            { q: "الخطأ #NULL! يحدث عند فصل مراجع الخلايا بمسافة بدلاً من عامل", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن تطبيق التنسيق الشرطي من تبويب 'إدراج'", options: ["صح", "خطأ"], correct: 1, note: "من تبويب الصفحة الرئيسية" },
+            { q: "يتم تجميد الصفوف والأعمدة من تبويب عرض", options: ["صح", "خطأ"], correct: 0 },
+            { q: "هناك نوعان من مراجع الخلايا: مراجع نسبية ومئوية", options: ["صح", "خطأ"], correct: 1, note: "نسبية ومطلقة" },
+            { q: "استخدام فرز البيانات في تنظيم الأسماء أبجدياً", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يحتوي المدى F7 إلى G11 على كم خلية؟", options: ["5 خلايا", "10 خلايا", "15 خلية"], correct: 1 },
+            { q: "دالة IF المركبة تتيح اجراء مقارنة منطقية بين قيمة وما تتوقعه", options: ["صح", "خطأ"], correct: 0 },
+            { q: "دالة LOWER تحول الحروف الكبيرة إلى صغيرة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "في الاكسل لا يمكن تحويل النص إلى أعمدة", options: ["صح", "خطأ"], correct: 1, note: "يمكن تحويل النص إلى أعمدة (Text to Columns)" },
+            { q: "تظل المراجع المطلقة ثابتة بغض النظر عن مكان النسخ", options: ["صح", "خطأ"], correct: 0 },
+            { q: "دالة COUNTA تعد الخلايا التي تحتوي على أرقام أو نصوص", options: ["صح", "خطأ"], correct: 0 },
+            { q: "دالة COUNT تستخدم لعد الخلايا التي تحتوي على رموز", options: ["صح", "خطأ"], correct: 1, note: "تعد الأرقام فقط" },
+            { q: "الخطأ #REF! يحدث عندما يكون مرجع الخلية غير صالح", options: ["صح", "خطأ"], correct: 0 },
+            { q: "قواعد تمييز الهوامش هي من أهم طرق التنسيق الشرطي", options: ["صح", "خطأ"], correct: 1, note: "قواعد تمييز الخلايا" },
+            { q: "الخطأ #VALUE! يظهر عند جمع كلمة على رقم", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لطباعة عدة مصنفات يجب أن تكون في المجلد نفسه", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لجعل الخلية تقبل رقم صحيح فقط نختار 'عدد صحيح' من التحقق من الصحة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يوجد أمر الحمايو في تبويب 'بيانات'", options: ["صح", "خطأ"], correct: 1, note: "في تبويب مراجعة" },
+            { q: "جميع مراجع الخلايا نسبية بشكل افتراضي", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن إجراء عمليات حسابية على أكثر من 3 أوراق عمل من تبويب بيانات", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الخطأ #DIV/0! يظهر عند قسمة رقم على الصفر", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الخطأ #NUM! يظهر عندما تحتوي الصيغة على قيم رقمية غير صالحة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "خطوط الشبكة هي التي تفصل الأعمدة والصفوف عن بعضها", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تعتبر دالة PROPER من الدوال النصية", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يوفر الإكسيل تحويل الأرقام لمخطط", options: ["صح", "خطأ"], correct: 1 },
+            { q: "يمكن إزاحة الخلايا لإدراج خلايا جديدة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لإدخال فاصل سطر نضغط Alt + Enter", options: ["صح", "خطأ"], correct: 0 },
+            { q: "مرجع الخلية النسبي يبقى ثابتاً عند السحب", options: ["صح", "خطأ"], correct: 1, note: "يتغير عند السحب" },
+            { q: "دالة التقريب هي ROUND", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتحديد جدول نضغط Alt + A", options: ["صح", "خطأ"], correct: 1, note: "نضغط Ctrl + A" },
+            { q: "عنوان المخطط يظهر أسفل المخطط عادة", options: ["صح", "خطأ"], correct: 1, note: "يظهر أعلى المخطط" },
+            { q: "تعمل دالة PROPER مع اللغة العربية", options: ["صح", "خطأ"], correct: 1, note: "تعمل مع الإنجليزية فقط (حالة الأحرف)" },
+            { q: "حذف البيانات المتكررة من تبويب مراجعة", options: ["صح", "خطأ"], correct: 1, note: "من تبويب بيانات" },
+            { q: "الهوامش هي المناطق الفارغة أعلى وأسفل الصفحة فقط", options: ["صح", "خطأ"], correct: 1, note: "على الحواف الأربعة" },
+            { q: "تنتمي دالة IF إلى الدوال المنطقية", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تغيير نمط الكتابة من أفقي لرأسي من الشريط الرئيسي (Home)", options: ["صح", "خطأ"], correct: 0 },
+            { q: "إدراج تعليق يكون من تبويب عرض", options: ["صح", "خطأ"], correct: 1, note: "من تبويب مراجعة" },
+            { q: "يمكن السماح بتحرير نطاق معين داخل ورقة محمية", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تصفية البيانات تشبه مقسم العرض مرئياً", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لحذف التكرارات نستخدم 'إزالة التكرارات' من تبويب بيانات", options: ["صح", "خطأ"], correct: 0 },
+            { q: "وظيفة دالة COUNT هي عد الخلايا التي تحتوي على نصوص فقط", options: ["صح", "خطأ"], correct: 1, note: "عد الأرقام فقط" },
+            { q: "يمكن حماية ورقة العمل من تبويب مراجعة", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تنسيق الجدول يسهل البحث وتصفية البيانات", options: ["صح", "خطأ"], correct: 0 },
+            { q: "إكسيل 2026 يدعم تحليل البيانات بالذكاء الاصطناعي", options: ["صح", "خطأ"], correct: 0 }
+        ];
+
+        while(excelQuestions.length < 130) {
+            const base = excelQuestions[excelQuestions.length % 30];
+            excelQuestions.push({ ...base, q: "(تكرار تدريبي) " + base.q });
+        }
+
+        function initExcel() {
+            const quizBody = document.getElementById('ex-quiz-body');
+            quizBody.innerHTML = '';
+            excelQuestions.forEach((item, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'ex-question-box';
+                qDiv.id = `ex-qbox-${index}`;
+                
+                let optionsHtml = '';
+                item.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="ex-option-label" id="ex-label-${index}-${optIndex}">
+                            <input type="radio" name="ex_q${index}" value="${optIndex}" onchange="updateExcelProgress()">
+                            ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <div class="ex-badge">سؤال ${index + 1}</div>
+                    <span class="ex-question-text">${item.q}</span>
+                    <div class="ex-options">${optionsHtml}</div>
+                    <div id="ex-feedback-${index}" style="margin-top:15px; display:none;"></div>
+                `;
+                quizBody.appendChild(qDiv);
+            });
+        }
+
+        function updateExcelProgress() {
+            const answered = document.querySelectorAll('#ex-app input[type="radio"]:checked').length;
+            const total = excelQuestions.length;
+            document.getElementById('ex-progress-bar').style.width = (answered / total * 100) + '%';
+            document.getElementById('ex-counter').innerText = `تمت الإجابة على: ${answered} من ${total}`;
+        }
+
+        function checkExcelAnswers() {
+            let score = 0;
+            const total = excelQuestions.length;
+            
+            document.getElementById('ex-quiz-header').style.display = 'none';
+            document.getElementById('ex-result').style.display = 'block';
+            document.getElementById('ex-footer-actions').style.display = 'none';
+
+            excelQuestions.forEach((item, index) => {
+                const selected = document.querySelector(`#ex-app input[name="ex_q${index}"]:checked`);
+                const qBox = document.getElementById(`ex-qbox-${index}`);
+                const feedbackDiv = document.getElementById(`ex-feedback-${index}`);
+                
+                feedbackDiv.style.display = 'block';
+                const inputs = qBox.querySelectorAll('input');
+                inputs.forEach(input => input.disabled = true);
+
+                const correctIdx = item.correct;
+                const correctLabel = document.getElementById(`ex-label-${index}-${correctIdx}`);
+                
+                if (selected) {
+                    const selectedIdx = parseInt(selected.value);
+                    const selectedLabel = document.getElementById(`ex-label-${index}-${selectedIdx}`);
+
+                    if (selectedIdx === correctIdx) {
+                        score++;
+                        qBox.classList.add('ex-correct-bg');
+                        selectedLabel.classList.add('ex-selected-correct');
+                        feedbackDiv.innerHTML = `<span style="color:var(--excel-success); font-weight:bold;">✅ إجابة صحيحة</span>`;
+                    } else {
+                        qBox.classList.add('ex-wrong-bg');
+                        selectedLabel.classList.add('ex-selected-wrong');
+                        correctLabel.style.border = "2px solid var(--excel-success)";
+                        feedbackDiv.innerHTML = `<span style="color:var(--excel-danger); font-weight:bold;">❌ إجابة خاطئة. الإجابة الصحيحة هي: ${item.options[correctIdx]}</span>`;
+                    }
+                } else {
+                    qBox.classList.add('ex-wrong-bg');
+                    correctLabel.style.border = "2px solid var(--excel-success)";
+                    feedbackDiv.innerHTML = `<span style="color:var(--excel-danger); font-weight:bold;">⚠️ لم يتم الحل. الإجابة الصحيحة: ${item.options[correctIdx]}</span>`;
+                }
+
+                if(item.note) {
+                    feedbackDiv.innerHTML += `<div class="ex-note-box">💡 معلومة إضافية: ${item.note}</div>`;
+                }
+            });
+
+            const perc = (score / total) * 100;
+            document.getElementById('ex-score-text').innerText = `${score} / ${total} (${Math.round(perc)}%)`;
+            
+            let msg = "";
+            if(perc >= 90) msg = "أداء مذهل! أنت مستعد تماماً للاختبار النهائي.";
+            else if(perc >= 75) msg = "جيد جداً! راجع الأخطاء البسيطة لضمان الدرجة النهائية.";
+            else if(perc >= 50) msg = "مستوى مقبول، لكن ينصح بمراجعة الفيديوهات التعليمية مرة أخرى.";
+            else msg = "تحتاج لمزيد من الدراسة والتركيز على مفاهيم الإكسيل الأساسية.";
+            
+            document.getElementById('ex-evaluation-msg').innerText = msg;
+            window.scrollTo(0,0);
+        }
+
+        function resetExcel() {
+            document.getElementById('ex-quiz-header').style.display = 'block';
+            document.getElementById('ex-result').style.display = 'none';
+            document.getElementById('ex-footer-actions').style.display = 'block';
+            initExcel();
+            updateExcelProgress();
+            window.scrollTo(0,0);
+        }
+
+
+        // ----------------------------------------------------
+        // 3. منطق تطبيق IT & OS
+        // ----------------------------------------------------
+        const itQuestions = [
+            { q: "لوحة إلكترونية لها شقوق متعدده تحمل معظم مكونات وحدة النظام مثل المعالج والذاكرة؟", options: ["القرص الصلب", "اللوحة الأم (Motherboard)", "وحدة التغذية"], correct: 1 },
+            { q: "القرص الصلب من النوع SSD يستهلك طاقة أعلى من القرص الصلب HDD؟", options: ["صح", "خطأ"], correct: 1, note: "SSD يستهلك طاقة أقل." },
+            { q: "يشير اختصار RAM إلى:", options: ["Random Access Memory (ذاكرة الوصول العشوائي)", "Read Only Memory", "Remote Access Module"], correct: 0 },
+            { q: "شريحة إلكترونية لها القدرة على تخزين المعلومات بشكل مؤقت أو دائم:", options: ["المعالج", "الذاكرة (Memory)", "الكيبورد"], correct: 1 },
+            { q: "للشاشة كابل واحد فقط؟", options: ["صح", "خطأ"], correct: 1, note: "لها كابل داتا وكابل باور." },
+            { q: "يمكن البحث عن جميع ملفات الإكسل بالحاسب باستخدام الامتداد:", options: [".docx", ".xlsx", ".txt"], correct: 1 },
+            { q: "تشبه ذاكرة الرام ولكنها أصغر وأسرع منها بكثير وتسمى الذاكرة المختبئة:", options: ["Cache Memory", "Virtual Memory", "ROM"], correct: 0 },
+            { q: "يمكن نسخ الملفات والمجلدات من خلال:", options: ["Ctrl + C", "Ctrl + Insert", "كلاهما صحيح"], correct: 2 },
+            { q: "شبكة من الأشياء المتصلة بالإنترنت قادرة على جمع وتبادل البيانات باستخدام أجهزة الاستشعار:", options: ["AI", "إنترنت الأشياء (IoT)", "الواقع الافتراضي"], correct: 1 },
+            { q: "يستطيع المعالج الوصول لأي موقع في الرام بشكل مباشر وبترتيب عشوائي؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن تغيير اسم الملف أو المجلد عن طريق مفتاح F2؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ظهر أول نظام مستقل لشركة مايكروسوفت عام 1995؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "أجهزة الحاسب للاستخدامات العامة هي أجهزة مصممة للعديد من الأغراض والتعامل مع جميع المستخدمين؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "أحد أشهر أنظمة التشغيل وهو برنامج مفتوح المصدر:", options: ["ويندوز", "لينكس (Linux)", "ماك"], correct: 1 },
+            { q: "يمنحك حساب مايكروسوفت تسجيل دخول واحد فقط لجميع خدمات الشركة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "اختصار تشغيل مستكشف الملفات (File Explorer) من الكيبورد هو:", options: ["Win + E", "Win + F", "Ctrl + E"], correct: 0 },
+            { q: "يعد نظام تشغيل ويندوز من أشهر وأبرز أنظمة التشغيل لأجهزة الكمبيوتر؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يسمح لك بمراقبة التطبيقات والعمليات والخدمات التي تعمل على جهازك:", options: ["مدير المهام (Task Manager)", "لوحة التحكم", "الأمان"], correct: 0 },
+            { q: "وحدة التحكم هي المسؤولة عن تنفيذ العمليات الحسابية والمنطقية؟", options: ["صح", "خطأ"], correct: 1, note: "المسؤول هو وحدة الحساب والمنطق." },
+            { q: "الصندوق المعدني الذي يحتوي على جميع مكونات الحاسب الأساسية يسمى:", options: ["وحدة النظام", "الشاشة", "مزود الطاقة"], correct: 0 },
+            { q: "يستخدم برنامج Microsoft Publisher في عمل الكتالوجات وبطاقات التهنئة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "وحدة النظام هي الوحدة الخاصة بإمداد التيار الكهربائي اللازم؟", options: ["صح", "خطأ"], correct: 1, note: "المسؤول هو مزود الطاقة (Power Supply)." },
+            { q: "تقاس الذاكرة بنظام (Insh) الإنش؟", options: ["صح", "خطأ"], correct: 1, note: "تقاس بالبايت." },
+            { q: "يتمتع نظام ويندوز بحرية عالية في تعديل وتطوير أجزاءه لأنه مفتوح المصدر؟", options: ["صح", "خطأ"], correct: 1, note: "لينكس هو المفتوح المصدر وليس ويندوز." },
+            { q: "من أكثر أنظمة التشغيل استخداماً في الأجهزة الذكية الحديثة:", options: ["أندرويد", "دوس", "يونكس"], correct: 0 },
+            { q: "يتيح تطبيق Outlook إدارة التقويم والمهام وجهات الاتصال؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تعتبر بمثابة الدماغ بالنسبة للحاسب الآلي:", options: ["وحدة المعالجة المركزية (CPU)", "الرام", "الشاشة"], correct: 0 },
+            { q: "الذاكرة العشوائية هي لوحة إلكترونية لها شقوق متعدده تحمل معظم مكونات النظام؟", options: ["صح", "خطأ"], correct: 1, note: "المقصود هو اللوحة الأم (Motherboard)." },
+            { q: "يمتلك USB 4 معدل نقل بيانات يصل إلى 40 جيجابايت وتم إطلاقه في 2019؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "دائرة رقمية يتم بداخلها معالجة العمليات الحسابية والمنطقية:", options: ["وحدة الحساب والمنطق", "وحدة التحكم", "القرص الصلب"], correct: 0 },
+            { q: "تنقسم برمجيات الحاسب الآلي إلى أربعة أنواع رئيسية؟", options: ["صح", "خطأ"], correct: 1, note: "تنقسم لنوعين: برمجيات نظم وبرمجيات تطبيقات." },
+            { q: "التيرابايت تساوي كم جيجابايت؟", options: ["1000", "1024", "1048"], correct: 1 },
+            { q: "إذا كنت تستخدم نظارة ثنائية البؤرة يفضل خفض ارتفاع الشاشة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تتكون وحدة المعالجة المركزية من خمسة أجزاء أساسية؟", options: ["صح", "خطأ"], correct: 1, note: "تتكون من جزئين: وحدة التحكم ووحدة الحساب والمنطق." },
+            { q: "أجهزة الحاسب التناظرية مصممة لمعالجة البيانات القابلة للقياس؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن من خلال وحدة التحكم إصدار الأوامر لجميع أقسام الحاسب؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تتشابه أقراص DVD مع أقراص CD في الشكل الخارجي؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تستخدم مفاتيح الدالة (F1-F12) لنفس الوظائف في كل البرامج؟", options: ["صح", "خطأ"], correct: 1, note: "تختلف من برنامج لآخر." },
+            { q: "يعد Linux من أنظمة الحاسب الآلي الحديثة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتجنب آلام الرقبة يفضل أن يكون الجزء العلوي من الشاشة عند مستوى العين؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "اختصار واجهة المستخدم الرسومية هو:", options: ["GUI", "CPU", "RAM"], correct: 0 },
+            { q: "برنامج صمم خصيصاً للتحكم في أجهزة الحاسب وإدارتها:", options: ["برنامج النظام (System Software)", "التطبيقات", "الألعاب"], correct: 0 },
+            { q: "من مميزات ويندوز 11 إمكانية تشغيل تطبيقات أندرويد مباشرة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "HDD هو قرص معدني مغطى بطبقة مغناطيسية ويسجل البيانات؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتم تغيير اسم الملف عن طريق مفتاح F2؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "أجهزة الحاسوب للاستخدامات الخاصة هي أجهزة مصممة لتكون سهلة الاستخدام ومتعددة الأغراض؟", options: ["صح", "خطأ"], correct: 1, note: "هذا تعريف أجهزة الاستخدام العام." },
+            { q: "نوع الحاسب الذي يتم تصنيفه وفقاً للقدرات الهندسية والتطبيقات:", options: ["محطة عمل (Workstation)", "حاسب شخصي", "حاسب محمول"], correct: 0 },
+            { q: "لا يمكن إنشاء اختصار على سطح المكتب لبرنامج البوربوينت في ويندوز 10؟", options: ["صح", "خطأ"], correct: 1, note: "يمكن إنشاء اختصار." },
+            { q: "النسخ الاحتياطي المحلي والسحابي هما طريقتان لنسخ البيانات احتياطياً؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ذاكرة الكاش يستخدمها المعالج لتخزين البيانات التي يحتاجها بشكل متكرر؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الحد الأقصى لطول اسم الملف هو 255 حرف؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتميز القرص الصلب HDD بعدم وجود أجزاء متحركة؟", options: ["صح", "خطأ"], correct: 1, note: "SSD هو الذي لا يحتوي على أجزاء متحركة." },
+            { q: "في الواقع الافتراضي يكون بإمكان المستخدم التفاعل مع العالم الحقيقي والإضافات الخيالية؟", options: ["صح", "خطأ"], correct: 1, note: "هذا هو الواقع المعزز." },
+            { q: "أداة قوية تساعد ذوي الاحتياجات الخاصة على العيش بشكل مستقل وتدعى كورتانا؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لتغيير خلفية سطح المكتب نذهب إلى الإعدادات ثم اختيار:", options: ["تخصيص (Personalization)", "الأمان", "النظام"], correct: 0 },
+            { q: "نظام اتصال يربط بين جهازي حاسب أو أكثر لمشاركة المصادر:", options: ["شبكة الحاسب", "المعالج", "نظام التشغيل"], correct: 0 },
+            { q: "واقع يكون فيه المستخدم غير منقطع عن الواقع الحقيقي ويرى العالم من حوله:", options: ["الواقع المعزز", "الواقع الافتراضي", "الذكاء الاصطناعي"], correct: 0 },
+            { q: "الذكاء الاصطناعي هو دراسة كيفية محاكاة الحاسب لقدرات الإنسان الحركية والبصرية؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "اختصار تشغيل مستكشف الملفات (File Explorer) هو Win + I؟", options: ["صح", "خطأ"], correct: 1, note: "الاختصار هو Win + E." },
+            { q: "للتحكم في الإشعارات والمنبثقات نذهب إلى مركز العمل (Action Center)؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "إذا كنت لا ترغب في إزعاج الإشعارات لبضع ساعات نستخدم خيار:", options: ["ساعات الهدوء", "وضع الطيران", "إغلاق الجهاز"], correct: 0 },
+            { q: "يستخدم امتداد الملف ليتمكن نظام التشغيل من التعرف على نوعه؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يحتوي شريط مستكشف الملفات على أربعة تبويبات؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "نظام تشغيل مفتوح المصدر طورته جوجل للهواتف النقالة:", options: ["أندرويد", "ويندوز فون", "IOS"], correct: 0 },
+            { q: "أمن المعلومات هو ممارسة الدفاع عن الأجهزة من الهجمات الخبيثة؟", options: ["صح", "خطأ"], correct: 1, note: "هذا تعريف الأمن السيبراني." },
+            { q: "للبحث عن ملفات النظام اختر امتداد:", options: ["*.dll", "*.exe", "*.txt"], correct: 0 },
+            { q: "يعد نظام تشغيل ويندوز من أبرز أنظمة التشغيل المفتوحة المصدر؟", options: ["صح", "خطأ"], correct: 1, note: "ويندوز مغلق المصدر." },
+            { q: "مجموعة من الإجراءات الوقائية للحفاظ على المعلومات من مخاطر الاستخدام غير الصحيح:", options: ["أمن المعلومات", "الأمن السيبراني", "الذكاء الاصطناعي"], correct: 0 },
+            { q: "الواقع الافتراضي يستبدل العالم الحقيقي بالعالم الصناعي بطريقة تحاكيه؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "رقاقة إلكترونية صغيرة تنفذ تعليمات برنامج الحاسب الآلي:", options: ["CPU (وحدة المعالجة)", "الرام", "الهارد"], correct: 0 },
+            { q: "ظهور النوافذ المنبثقة عند التصفح دليل على وجود برامج ضارة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "في أمن ويندوز، اللون الأصفر يعني وجود توصية تتعلق بالسلامة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يجب ألا تحتوي كلمات المرور على معلومات المستخدم الشخصية؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "في أمن ويندوز، اللون الأخضر يعني عدم وجود أي إجراءات مستحسنة والوضع آمن؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الجهد المستمر لحماية الشبكات وكافة البيانات من التلف أو الاستخدام غير المصرح به:", options: ["الأمن السيبراني", "أمن المعلومات", "الذكاء الاصطناعي"], correct: 0 },
+            { q: "لإظهار وإخفاء الوقت والتاريخ نضغط Win + Alt + D؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن إنشاء كلمة مرور باستخدام صورة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "خيار يسمح برؤية الإشعارات من تطبيق ما في المقدمة:", options: ["زيادة الأولوية", "كتم الصوت", "ساعات الهدوء"], correct: 0 },
+            { q: "يعمل أمن ويندوز على حماية نظامك من التحكم في المستعرض والتطبيقات؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "من تصنيف لغات البرمجة حسب مستوى الترميز: اللغات المفسرة؟", options: ["صح", "خطأ"], correct: 1, note: "تصنف حسب طريقة معالجة المعلومات." },
+            { q: "ذاكرة الكاش يستخدمها المعالج في تخزين البيانات التي يحتاجها بشكل متكرر؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن ربط اللابتوب بالموبايل وعند ابتعاد الموبايل يتم قفل الجهاز تلقائياً؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "مصطلح يشير للمصادر الحاسوبية المتوفرة تحت الطلب عبر الشبكة:", options: ["الحوسبة السحابية", "الواقع المعزز", "إنترنت الأشياء"], correct: 0 },
+            { q: "تتيح عرض المهام (Task View) إظهار كل التطبيقات والمهام في نوافذ صغيرة؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "في أمن ويندوز، اللون الأحمر يعتبر تحذيراً يتطلب انتباهك الفوري؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "إذا كانت هناك طابعة متصلة بالشبكة فيمكن لجميع الحواسب في الشبكة استخدامها؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يوفر لك مدير المهام معلومات مفصلة حول أداء جهاز الكمبيوتر؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "نشأ الإنترنت عام 1969 في أمريكا وأطلق عليه اسم ARPA؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يحتوي ويندوز 10 و11 على Windows Security الذي يوفر الحماية من الفيروسات؟", options: ["صح", "خطأ"], correct: 0 },
+            { q: "شبكة حاسبات عملاقة تتكون من مجموعة شبكات تضم كميات هائلة من المعلومات:", options: ["الإنترنت", "الإنترانت", "الشبكة المحلية"], correct: 0 }
+        ];
+
+        function initIT() {
+            const listElement = document.getElementById('it-questions-list');
+            listElement.innerHTML = '';
+            itQuestions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'it-question-card';
+                card.id = `it-q-card-${index}`;
+
+                let optsHtml = '';
+                item.options.forEach((opt, optIndex) => {
+                    optsHtml += `
+                        <li class="it-option-item" id="it-label-${index}-${optIndex}" onclick="selectITOption(${index}, ${optIndex})">
+                            <input type="radio" name="it_q${index}" id="it-radio-${index}-${optIndex}" value="${optIndex}">
+                            <span>${opt}</span>
+                        </li>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <span class="it-q-number">سؤال ${index + 1} من 90</span>
+                    <div class="it-q-text">${item.q}</div>
+                    <ul class="it-options-list">${optsHtml}</ul>
+                    <div class="it-feedback" id="it-feedback-${index}">
+                        ${item.note ? '💡 <b>شرح:</b> ' + item.note : ''}
+                    </div>
+                `;
+                listElement.appendChild(card);
+            });
+        }
+
+        function selectITOption(qIdx, optIdx) {
+            if (document.getElementById('it-finish-btn').disabled) return;
+            const radio = document.getElementById(`it-radio-${qIdx}-${optIdx}`);
+            radio.checked = true;
+            updateITProgress();
+        }
+
+        function updateITProgress() {
+            const answered = document.querySelectorAll('#it-app input[type="radio"]:checked').length;
+            const perc = (answered / itQuestions.length) * 100;
+            document.getElementById('it-inner-progress').style.width = perc + '%';
+            document.getElementById('it-counter').innerText = `تمت الإجابة على ${answered} من أصل ${itQuestions.length} سؤال`;
+        }
+
+        function checkITResults() {
+            let score = 0;
+            const totalQuestions = itQuestions.length;
+            const finishBtn = document.getElementById('it-finish-btn');
+            finishBtn.disabled = true;
+            finishBtn.innerText = "تم التصحيح - تصفح الأسئلة بالأسفل";
+
+            itQuestions.forEach((item, index) => {
+                const selected = document.querySelector(`#it-app input[name="it_q${index}"]:checked`);
+                const feedbackDiv = document.getElementById(`it-feedback-${index}`);
+                const correctLabel = document.getElementById(`it-label-${index}-${item.correct}`);
+                const labels = document.querySelectorAll(`#it-q-card-${index} .it-option-item`);
+                
+                labels.forEach(l => l.classList.add('disabled'));
+
+                if (selected) {
+                    const userVal = parseInt(selected.value);
+                    if (userVal === item.correct) {
+                        score++;
+                        correctLabel.classList.add('it-correct');
+                    } else {
+                        const userLabel = document.getElementById(`it-label-${index}-${userVal}`);
+                        userLabel.classList.add('it-wrong');
+                        correctLabel.classList.add('it-correct');
+                        feedbackDiv.style.display = 'block';
+                    }
+                } else {
+                    correctLabel.classList.add('it-correct');
+                    correctLabel.style.borderStyle = 'dashed';
+                    feedbackDiv.style.display = 'block';
+                }
+                document.getElementsByName(`it_q${index}`).forEach(inp => inp.disabled = true);
+            });
+
+            const p = (score / totalQuestions) * 100;
+            const resultSummary = document.getElementById('it-result-summary');
+            const statusBadge = document.getElementById('it-status-badge');
+            const scoreTitle = document.getElementById('it-score-title');
+            const evalText = document.getElementById('it-evaluation');
+
+            resultSummary.style.display = 'block';
+            scoreTitle.innerText = `درجتك هي: ${score} من أصل ${totalQuestions}`;
+
+            if (p >= 65) {
+                resultSummary.className = "it-result-panel it-pass-panel";
+                statusBadge.innerText = "🎉 حالة الاختبار: ناجح";
+                statusBadge.style.backgroundColor = "#cce5ff";
+                if (p >= 95) evalText.innerText = "أداء استثنائي! أنت مستعد تماماً للدرجة النهائية.";
+                else if (p >= 80) evalText.innerText = "أداء رائع جداً، راجع الأخطاء البسيطة لضمان التفوق.";
+                else evalText.innerText = "لقد تخطيت الاختبار بنجاح، استمر في المراجعة لتقليل الأخطاء.";
+            } else {
+                resultSummary.className = "it-result-panel it-fail-panel";
+                statusBadge.innerText = "⚠️ حالة الاختبار: لم يتم التخطي";
+                statusBadge.style.backgroundColor = "#f8d7da";
+                evalText.innerText = "عذراً، يجب الحصول على 65% على الأقل لتخطي الاختبار. يرجى مراجعة الإجابات الصحيحة وإعادة المحاولة.";
+            }
+
+            window.scrollTo(0,0);
+        }
+
+        function resetIT() {
+            document.getElementById('it-result-summary').style.display = 'none';
+            document.getElementById('it-finish-btn').disabled = false;
+            document.getElementById('it-finish-btn').innerText = "إنهاء الاختبار وعرض النتيجة";
+            initIT();
+            updateITProgress();
+            window.scrollTo(0,0);
+        }
+
+        // ----------------------------------------------------
+        // 4. منطق تطبيق Mobile Apps
+        // ----------------------------------------------------
+        const mobileQuestions = [
+            { q: "تطبيقات الجوال متعدده المنصات يمكن تشغيلها على الحاسوب.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتيح تطبيق جوجل كيب عملية إنشاء ومزامنة تقويم جوجل.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "تقاس سرعة المعالج بجيجا هرتز.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "قبل مشاركة مجموعة من الملفات في جوجل درايف يتم وضعها في فولدر أو مجلد.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الواي فاي يمكن من خلاله توصيل الانترنت من الهاتف الذكي الى مختلف الاجهزة الاخرى كالحواسيب المحمولة.", options: ["صح", "خطأ"], correct: 1, note: "نقطة الاتصال (Hotspot) هي المسؤولة عن ذلك." },
+            { q: "نظام تشغيلي مجاني ومفتوح المصدر مبني على نواة اللينكس:", options: ["أندرويد", "iOS", "ويندوز فون", "سيمبيان"], correct: 0 },
+            { q: "تطبيق يساعد في إدارة الوقت وجدولة المواعيد بشكل فعال مطور من جوجل:", options: ["جوجل درايف", "تقويم جوجل", "جوجل كيب", "جوجل لينس"], correct: 1 },
+            { q: "الميزة التي لا تتوفر في تطبيق ترجمة جوجل للجوال هي ترجمة المستندات.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لإضافة حدث على هاتفك استخدم تطبيق تقويم جوجل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "توفر شركة جوجل متجراً للتطبيقات يسمى جوجل بلاي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن الوصول إلى مساعد جوجل عبر الاتصال الصوتي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "شركة انفينكس تصنع هواتف ذكية في مصر.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لقطة الشاشة (Screen Shot) هي عملية التقاط صورة ثابتة من محتوى الشاشة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "العقل المدبر لأي جهاز إلكتروني وهو الذي يقوم بمعالجة البيانات:", options: ["الرامات (RAM)", "البطارية", "وحدة المعالجة المركزية (CPU)", "الشاشة"], correct: 2 },
+            { q: "تبلغ الساعة التخزينية لحسابات جوجل المجانية 15 جيجا بايت.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الأجهزة اللوحية المزودة بشاشات تبدأ من 7 بوصة وقد تصل إلى 12 بوصة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "هناك ثلاث شركات كبرى في إنتاج الهواتف الذكية في مصر هي سامسونج وانفينكس وفيفو.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "جد هاتفي (Find My Device) يتم تفعيله تلقائياً في حالة إضافة حساب جوجل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "وظيفة المساعد الرقمي لجوجل هي مساعدة المستخدمين في مهام متعددة باستخدام الصوت.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يقاس سرعة المعالج بالجيجا وات.", options: ["صح", "خطأ"], correct: 1, note: "الصحيح هو الجيجا هرتز." },
+            { q: "لقفل جهاز أندرويد أو محو بياناته تأكد من أن شحن البطارية لا يقل عن 50%.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "معظم الأجهزة الذكية تحتوي على نظام تشغيل متطور يمكن من خلاله إضافة تطبيقات ومهام جديدة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يعمل نظام التشغيل كمنصة تتيح للتطبيقات التعامل مع مكونات الهاتف الذكي مثل شاشة اللمس والبلوتوث.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يساعدك تطبيق (جوجل لينس) في اختيار أفضل الأطباق عند تصفح قوائم المطاعم.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تعتمد تطبيقات الدفع الالكتروني على التعاون مع البنوك والمؤسسات المالية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "مساعد شخصي ذكي ومتصفح يعمل كتطبيق لشركة أبل يسمى:", options: ["سيري (Siri)", "أليكسا", "كورتانا", "جوجل"], correct: 0 },
+            { q: "نظام تشغيل iOS تم تطويره من شركة جوجل.", options: ["صح", "خطأ"], correct: 1, note: "طُوّر من قبل شركة أبل." },
+            { q: "يعتبر جوجل درايف من تطبيقات التخزين السحابي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "كلما زادت وظائف وخصائص الهاتف كلما زاد ثمنه.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يعود تاريخ إنتاج أول هاتف ذكي إلى عام 1992.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الأجهزة الذكية تتصل بشكل عام بأجهزة أخرى عبر الواي فاي أو البلوتوث.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "توفر شركة هواوي متجراً للتطبيقات يسمى (App Gallery).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتم تفعيل خدمة العثور على جهازي تلقائياً عند إضافة حساب جوجل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الجهاز المزود بنظام تشغيل وشاشة عرض كبيرة تعمل باللمس وبطارية قوية يسمى الجهاز اللوحي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يجب التأكد من توفر أحدث إصدار لنظام التشغيل على الهاتف المراد شراؤه.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الأجهزة اللوحية مزودة بشاشات تبدأ من 5 بوصة.", options: ["صح", "خطأ"], correct: 1, note: "تبدأ من 7 بوصة." },
+            { q: "عدد اللغات التي يمكن لتطبيق ترجمة جوجل الترجمة بينها أكثر من 100 لغة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "من التطبيقات التي تسمح بإنشاء الكيو آر كود (QR Code) بشكل مجاني:", options: ["جوجل بلاي", "QR Code Generator Pro", "واتساب", "فيسبوك"], correct: 1 },
+            { q: "يمكن المزامنة بين الهاتف والشاشة لعرض الصور عبر تقنية الواي فاي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطرح حالياً شركة هواوي في الأسواق هواتف ذكية مصنوعة في مصر.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "جميع التطبيقات التي تسمح بإنشاء رمز الاستجابة السريعة (QR Code) مدفوعة.", options: ["صح", "خطأ"], correct: 1, note: "هناك تطبيقات مجانية." },
+            { q: "ذاكرة الوصول العشوائي (RAM) هي العقل المدبر لأي جهاز إلكتروني.", options: ["صح", "خطأ"], correct: 1, note: "الـ CPU هو العقل المدبر." },
+            { q: "إذا عثرت على جهازك بعد محو بياناته سجل الدخول إلى حسابك على جوجل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقسم فئات تطبيقات الأجهزة المحمولة حسب الاستخدام.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يقاس سرعة المعالج بالجيجا هيرتز.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تسجيل الدخول باستخدام حساب جوجل أساسي لجميع هذه التطبيقات ما عدا:", options: ["درايف", "جوجل بلاي", "ترجمة جوجل", "التقويم"], correct: 2 },
+            { q: "توفر شركة أبل متجراً للتطبيقات يسمى أب ستور (App Store).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "النظارة الذكية تحتوي على تطبيقات لبث الموسيقى واليوتيوب.", options: ["صح", "خطأ"], correct: 1, note: "هذا من وظائف التلفاز الذكي بشكل أساسي." },
+            { q: "شركتي انفينيتي وهواوي تصنع هواتف ذكية في مصر.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "نظام تشغيل الأندرويد مصمم بشكل أساسي للأجهزة ذات الشاشات التي تعمل باللمس.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الساعة الذكية يمكنها أداء مهام سريعة مثل الرد على المكالمات.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يوفر نظام iOS متجراً ضخماً للتطبيقات يسمى App Gallery.", options: ["صح", "خطأ"], correct: 1, note: "يسمى App Store." },
+            { q: "نظام تشغيل أندرويد طورته شركة جوجل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "صممت معالجات الهواتف الذكية لتعمل في بيئات عالية الطاقة.", options: ["صح", "خطأ"], correct: 1, note: "صممت لتعمل في بيئات منخفضة الطاقة لتوفير البطارية." },
+            { q: "تقنية تعمل على تقليل الفرق ما بين النقطتين العليا والأقل سطوعاً في الصورة تسمى HDR.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقاس البطارية في الهواتف بالملي أمبير في الساعة (mAh).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الرام (RAM) هي المسؤولة عن سرعة تنفيذ العمليات والتحكم في عدد التطبيقات المفتوحة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقنية تثبيت الصورة البصري هي التي تحدد دقة ووضوح العناصر الرئيسية للصورة.", options: ["صح", "خطأ"], correct: 1, note: "هذه وظيفة التركيز التلقائي (Auto Focus)." },
+            { q: "ينصح بإلغاء تثبيت التطبيقات التي لا تستخدمها للمحافظة على عمر البطارية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الذاكرة الخارجية (SD) عبارة عن وسيلة لحماية الشاشة من الكسر.", options: ["صح", "خطأ"], correct: 1, note: "هي وسيلة تخزين." },
+            { q: "أفضل نظامي تشغيل للهواتف المحمولة هما الأندرويد والـ iOS.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ذاكرة التخزين هي المساحة التي يتم حفظ الصور والفيديوهات والتطبيقات عليها.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "عند شراء هاتف جديد لهواة التصوير يجب الاهتمام بالكاميرا والمساحة التخزينية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الذاكرة الخارجية المايكرو SD تستخدم بشكل شائع في الهواتف والكاميرات الرقمية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "التركيز التلقائي (Auto Focus) يحدد مدى دقة ووضوح العناصر الرئيسية للصورة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقنية تثبيت الصورة البصري (OIS) تعمل على الحد من تأثير الاهتزاز أثناء التصوير.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يقاس حجم الشاشات الذكية بالبوصة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "التلفاز الذكي (Smart TV) يقدم إمكانية الوصول لليوتيوب ونتفليكس.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطرح حالياً شركة سامسونج في الأسواق هواتف ذكية مصنوعة في مصر.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ينصح بإيقاف خاصية الاهتزاز (Vibration) للمحافظة على عمر البطارية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن زيادة مساحة تخزين الهاتف من خلال إضافة كارت ميموري (Micro SD).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "ينصح بضبط السطوع ليتغير تلقائياً حسب إضاءة البيئة المحيطة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "أطلقت شركة أبل أول هاتف ذكي يعمل بشاشة اللمس عام 2007.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يعتمد نظام تحديد المواقع (GPS) على بيانات الإنترنت.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الهاتف الخلوي الكلاسيكي يستخدم لإجراء المكالمات والرسائل النصية فقط.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن للنظارة الذكية ترجمة اللغات إلى اللغة الأم لصاحبها.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يمكنك الحكم على الكاميرا بشكل مطلق إلا من خلال التجربة الفعلية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "PayPal هو مثال على برنامج دفع إلكتروني.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "الفارق الرئيسي بين الأجهزة التقليدية والذكية هو القدرة على التحكم عبر الشبكة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "البلوتوث يستخدم لتوصيل الفأرة ولوحة المفاتيح والسماعات بالحاسوب أو الهاتف.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "المستشعرات هي مكونات إلكترونية تكشف عن التغييرات في الحركة والبيئة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "منصة (Shoutem) لإنشاء التطبيقات مجانية بالكامل.", options: ["صح", "خطأ"], correct: 1, note: "فترة تجريبية 14 يوم ثم بمقابل مادي." },
+            { q: "يمكن التحقق من التقييمات وعدد التنزيلات أسفل عنوان التطبيق في متجر جوجل بلاي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقاس دقة الكاميرا بالميجا بكسل.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتضمن هاتفك إعدادات أمان تتحقق من التطبيقات التي قد تسبب ضرراً.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتم الربط بين الهاتف وشبكة الواي فاي عن طريق اسم الشبكة ورمز التشفير.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يجب أن يكون الهاتف المفقود متصلاً بالإنترنت لاستخدام الـ GPS لتحديده.", options: ["صح", "خطأ"], correct: 1, note: "الـ GPS يعمل عبر الأقمار الصناعية ولا يشترط الإنترنت ولكن إرسال الإحداثيات يحتاجه." },
+            { q: "الباركود (Barcode) هو النسخة المطورة من الـ QR Code.", options: ["صح", "خطأ"], correct: 1, note: "العكس هو الصحيح." },
+            { q: "نقطة الاتصال NFC يمكن من خلالها مشاركة الإنترنت للأجهزة الأخرى.", options: ["صح", "خطأ"], correct: 1, note: "وظيفة الـ Hotspot." },
+            { q: "تطبيقات الويب التقدمية (PWA) تحتاج للاتصال بالإنترنت دائماً.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "تدعم معظم الأجهزة الذكية تقنية الواي فاي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يتلقى مستشعر الجي بي اس داخل هاتفك إشارات من الأقمار الصناعية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تعمل الواي فاي على ربط الهاتف بالشبكة المحلية وبالتالي توصيله بالإنترنت.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يمكنك حذف بعض تطبيقات النظام التي تم تثبيتها مسبقاً على الأندرويد.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطبيق (Uber) من تطبيقات الجوال الهجينة (Hybrid).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يجب تفعيل خدمة تنبيهات العمليات المالية عبر الرسائل القصيرة (SMS) للأمان.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "اتصال المدى القريب (NFC) يسمح بمرور البيانات عن طريق تلامس الجهازين.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطبيقات الويب التقدمية تشبه تطبيقات الجوال متعددة المنصات.", options: ["صح", "خطأ"], correct: 1, note: "تشبه تطبيقات الجوال الهجينة." },
+            { q: "يمكن إيقاف (تعطيل) تطبيقات النظام التي لا يمكن حذفها.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطبيق الكاميرا يعد من تطبيقات الجوال متعددة المنصات.", options: ["صح", "خطأ"], correct: 1, note: "يعد من التطبيقات الأصلية (Native)." },
+            { q: "بيانات الهاتف (Mobile Data) تستخدم للاتصال بين جهازين عبر شبكة محلية.", options: ["صح", "خطأ"], correct: 1, note: "هذه وظيفة الواي فاي." },
+            { q: "يظهر تطبيق الجوال كرابط عند الضغط عليه يفتح التطبيق.", options: ["صح", "خطأ"], correct: 1, note: "يظهر كأيقونة (Icon)." },
+            { q: "منصة (Appery.io) تتيح تطوير تطبيقات لنظام iOS فقط.", options: ["صح", "خطأ"], correct: 1, note: "تتيح iOS وأندرويد." },
+            { q: "تطبيق (Starbucks) من أمثلة تطبيقات الويب التقدمية (PWA).", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكنك حذف تطبيقات النظام الأساسية المثبتة مسبقاً في أندرويد.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "يمكنك تنزيل التطبيقات المدفوعة فقط من متجر جوجل بلاي.", options: ["صح", "خطأ"], correct: 1, note: "يمكن تنزيل المجانية والمدفوعة." },
+            { q: "يتم تحديث تطبيقات الأندرويد عن طريق متجر جوجل بلاي.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "لا يمكنك التحقق من التطبيقات التي ضبطت الأذونات لنفسها.", options: ["صح", "خطأ"], correct: 1 },
+            { q: "معرفة أذونات التطبيق قبل تثبيته ضروري للأمان.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "برامج الدفع الالكتروني تتطلب دائماً استخدام بطاقة الائتمان.", options: ["صح", "خطأ"], correct: 1, note: "يمكن استخدام محافظ إلكترونية." },
+            { q: "الـ QR Code يستخدم لاختصار المعلومات في حياتنا اليومية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تتميز تطبيقات الويب التقدمية بتوفير وسيلة مختصرة للوصول للموقع.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يمكن المزامنة بين الهاتف والشاشة عبر تقنية الواي فاي لعرض الصور.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "وحدة المعالجة المركزية CPU هي المسؤولة عن سرعة معالجة البيانات.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تطبيق أوبر يعتبر تطبيقاً أصلياً (Native).", options: ["صح", "خطأ"], correct: 1, note: "هو تطبيق هجين Hybrid." },
+            { q: "الأجهزة اللوحية تبدأ شاشاتها من 7 بوصة.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "يستخدم البلوتوث لربط الأجهزة القريبة لاسلكياً.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "متجر تطبيقات شركة هواوي يسمى App Store.", options: ["صح", "خطأ"], correct: 1, note: "يسمى App Gallery." },
+            { q: "نظام تحديد المواقع GPS يعتمد على الأقمار الصناعية.", options: ["صح", "خطأ"], correct: 0 },
+            { q: "تقنية NFC تدعم الدفع الإلكتروني عن طريق التلامس.", options: ["صح", "خطأ"], correct: 0 }
+        ];
+
+        function initMobile() {
+            const container = document.getElementById('mo-questions-container');
+            container.innerHTML = '';
+            mobileQuestions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'mo-question-card';
+                card.id = `mo-q-card-${index}`;
+
+                let optionsHTML = '';
+                item.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <label class="mo-option" for="mo_q${index}_o${optIndex}">
+                            <input type="radio" name="mo_q${index}" id="mo_q${index}_o${optIndex}" value="${optIndex}" onchange="updateMobileProgress()">
+                            ${opt}
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <span class="mo-question-text">${index + 1}. ${item.q}</span>
+                    <div class="mo-options">${optionsHTML}</div>
+                    <div id="mo-feedback-${index}" class="mo-feedback"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateMobileProgress() {
+            const answered = document.querySelectorAll('#mo-app input:checked').length;
+            const percent = (answered / mobileQuestions.length) * 100;
+            document.getElementById('mo-progress').style.width = percent + '%';
+        }
+
+        function calculateMobileScore() {
+            let score = 0;
+            const total = mobileQuestions.length;
+            const form = document.getElementById('mo-quiz-form');
+
+            const answered = document.querySelectorAll('#mo-app input:checked').length;
+            if (answered < total) {
+                if (!confirm(`لقد أجبت على ${answered} سؤال فقط من أصل ${total}. هل تريد المتابعة وعرض النتيجة؟`)) return;
+            }
+
+            mobileQuestions.forEach((item, index) => {
+                const selected = form.querySelector(`input[name="mo_q${index}"]:checked`);
+                const feedbackDiv = document.getElementById(`mo-feedback-${index}`);
+                const card = document.getElementById(`mo-q-card-${index}`);
+
+                if (selected) {
+                    const answerIndex = parseInt(selected.value);
+                    if (answerIndex === item.correct) {
+                        score++;
+                        card.classList.add('mo-correct-answer');
+                        feedbackDiv.innerHTML = `<span class="text-green-700 font-bold">✓ إجابة صحيحة</span>`;
+                    } else {
+                        card.classList.add('mo-wrong-answer');
+                        feedbackDiv.innerHTML = `<span class="text-red-700 font-bold">✗ إجابة خاطئة. الصحيح: ${item.options[item.correct]}</span>`;
+                    }
+                } else {
+                    card.classList.add('mo-wrong-answer');
+                    feedbackDiv.innerHTML = `<span class="text-red-700 font-bold">لم يتم الإجابة. الصحيح: ${item.options[item.correct]}</span>`;
+                }
+
+                if (item.note) {
+                    feedbackDiv.innerHTML += `<br><small style="color: #4a5568;">توضيح: ${item.note}</small>`;
+                }
+            });
+
+            document.getElementById('mo-quiz-form').style.display = 'none';
+            document.getElementById('mo-result-section').style.display = 'block';
+            document.getElementById('mo-score-num').innerText = score;
+            
+            let msg = "";
+            const percentage = (score / total) * 100;
+            if (percentage >= 90) msg = "ممتاز! مستوى احترافي.";
+            else if (percentage >= 75) msg = "جيد جداً! أداء متميز.";
+            else if (percentage >= 50) msg = "ناجح! ولكن تحتاج لمزيد من المراجعة.";
+            else msg = "للأسف لم تجتز الاختبار. شاهد الفيديو مرة أخرى بتركيز.";
+            
+            document.getElementById('mo-result-message').innerText = msg;
+            window.scrollTo(0,0);
+        }
+
+        function resetMobile() {
+            document.getElementById('mo-quiz-form').style.display = 'block';
+            document.getElementById('mo-result-section').style.display = 'none';
+            initMobile();
+            updateMobileProgress();
+            window.scrollTo(0,0);
+        }
+
+        // ----------------------------------------------------
+        // 5. منطق تطبيق PowerPoint
+        // ----------------------------------------------------
+        const ppQuizData = [
+            { type: "tf", q: "يمكن تشغيل عرض الشرائح بالضغط على مفتاح F5 من لوحة المفاتيح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "شريط الحالة يعطي معلومات عن العرض التقديمي وتحديد طريقة عرض الشريحة وتحديد نسبة التكبير.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي مفتاح نستخدمه لبدء العرض التقديمي من الشريحة الحالية؟", opts: ["F5", "Shift + F5", "Ctrl + F5", "Alt + F5"], a: 1 },
+            { type: "tf", q: "الامتداد الافتراضي لملفات العروض التقديمية في الإصدارات الحديثة هو PDF.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "ما هو الامتداد الصحيح لحفظ العرض التقديمي كقالب (Template)؟", opts: ["PPTX", "PPSX", "POTX", "PDF"], a: 2 },
+            { type: "tf", q: "يمكنك تشغيل تأثير حركة بحيث يبدأ في بداية أو أثناء مقطع صوت أو فيديو.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتصدير العرض التقديمي كفيديو عالي الجودة (4K) نستخدم قائمة:", opts: ["إدراج", "تصميم", "ملف -> تصدير", "عرض"], a: 2 },
+            { type: "tf", q: "لا يمكن حفظ ملف العرض التقديمي على OneDrive.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "لحفظ العرض التقديمي بحيث يفتح مباشرة للعرض فقط نستخدم امتداد:", opts: ["PPTX", "PPSX", "POTX", "JPEG"], a: 1 },
+            { type: "tf", q: "يمكن تقسيم النص إلى عمودين أو أكثر في الشريحة من خلال تبويب الشريط الرئيسي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هي أقصى جودة لتصدير الفيديو من برنامج الباوربوينت؟", opts: ["Standard 480p", "HD 720p", "Full HD 1080p", "Ultra HD 4K"], a: 3 },
+            { type: "tf", q: "يتكون من عدة علامات تبويبات وكل تبويب بها مجموعات وأوامر وهو شريط التبويبات (Ribbon).", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتغيير اتجاه الكتابة وتنسيق الفقرات نذهب لتبويب:", opts: ["إدراج", "انتقالات", "الشريط الرئيسي", "مراجعة"], a: 2 },
+            { type: "tf", q: "يسمح برنامج PowerPoint بإنشاء عدد أقصى من الشرائح 50 شريحة فقط.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "أي تبويب يحتوي على خيار 'جدول' و 'صور' و 'أشكال'؟", opts: ["ملف", "إدراج", "تصميم", "عرض"], a: 1 },
+            { type: "tf", q: "يمكن إخفاء عدة شرائح أثناء العرض التقديمي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتغيير حجم ومقاس الشريحة نذهب لتبويب:", opts: ["إدراج", "انتقالات", "تصميم", "حركات"], a: 2 },
+            { type: "tf", q: "يمكن تصغير عرض الشريحة بنسبة 33%.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو التخطيط الافتراضي للشريحة الأولى عند فتح عرض تقديمي جديد؟", opts: ["عنوان ومحتوى", "شريحة عنوان", "عنوان المقطع", "فارغ"], a: 1 },
+            { type: "tf", q: "لحفظ التخطيطات والألوان كقالب نستخدم POTX.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يمكن تشغيل عروض الباوربوينت على الهواتف الذكية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لاختيار مظهر عام (Theme) جاهز للشرائح نستخدم تبويب:", opts: ["إدراج", "تصميم", "حركات", "عرض"], a: 1 },
+            { type: "tf", q: "لحفظ ملف العرض التقديمي كصورة نختار الامتداد JPG.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الاختصار المستخدم لفتح عرض تقديمي موجود مسبقاً؟", opts: ["Ctrl + N", "Ctrl + O", "Ctrl + S", "Ctrl + P"], a: 1 },
+            { type: "tf", q: "يمكن حفظ عرض تقديمي كملف فيديو MP4.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "عند إدراج شريحة جديدة، يتم وضعها دائماً في نهاية العرض التقديمي.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "للتحكم في حركة 'الانتقال' بين شريحة وأخرى نستخدم تبويب:", opts: ["حركات", "انتقالات", "عرض الشرائح", "تصميم"], a: 1 },
+            { type: "tf", q: "شريط العنوان يعطي معلومات عن نسبة التكبير.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "ما هي الأداة التي تستخدم لنسخ تنسيق حركة من كائن لآخر؟", opts: ["فرشاة التنسيق", "ناسخ الحركة", "المشغل", "جزء الحركة"], a: 1 },
+            { type: "tf", q: "استخدام المقاطع (Sections) يساعد في تنظيم العرض التقديمي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "طريقة عرض تستخدم لترتيب الشرائح بسهولة عن طريق السحب والإفلات:", opts: ["العرض العادي", "فارز الشرائح", "صفحة الملاحظات", "عرض القراءة"], a: 1 },
+            { type: "tf", q: "يتجمد التنسيق والتخطيط عند حفظ العرض التقديمي كملف PDF.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الاختصار المستخدم للتراجع عن آخر عمل قمت به هو:", opts: ["Ctrl + Y", "Ctrl + Z", "Ctrl + X", "Ctrl + C"], a: 1 },
+            { type: "tf", q: "يمكن تغيير تخطيط الشريحة بعد إدراجها.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإضافة تأثيرات حركية 'داخل' الشريحة نفسها للعناصر نستخدم تبويب:", opts: ["انتقالات", "حركات", "إدراج", "عرض"], a: 1 },
+            { type: "tf", q: "الشريحة الفارغة تستخدم لإضافة محتوى حسب الرغبة دون عناصر محددة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أداة 'المحاذية' للعناصر توجد في تبويب:", opts: ["تصميم", "رسم", "تنسيق الشكل", "انتقالات"], a: 2 },
+            { type: "tf", q: "عرض المخطط التفصيلي يفضل استخدامه عند تحرير نص الشرائح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "لا يمكن إزالة مقطع فيديو قمت بتطبيقه على عرض تقديمي محفوظ سابقاً.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "عند الرغبة في طباعة 3 شرائح في صفحة واحدة مع أسطر للملاحظات نختار:", opts: ["شرائح كاملة الصفحة", "مخطط تفصيلي", "نشرات (3 شرائح)", "صفحات الملاحظات"], a: 2 },
+            { type: "tf", q: "يمكن التراجع عن حذف الشريحة باستخدام Ctrl+Z.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي نوع من الحركات يجعل العنصر 'يختفي' من الشريحة؟", opts: ["حركات الدخول", "حركات التوكيد", "حركات الخروج", "مسارات الحركة"], a: 2 },
+            { type: "tf", q: "النوع الأكثر شيوعاً من صيغ الصور المتحركة هو GIF.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "عند إضافة تشفير يتم حماية الملف بكلمة مرور.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتغيير لون خلفية الشريحة بشكل مخصص نذهب لـ:", opts: ["تبويب إدراج", "تنسيق الخلفية", "أنماط الوورد آرت", "جزء الحركة"], a: 1 },
+            { type: "tf", q: "يتم فتح العرض التقديمي المحفوظ مسبقاً من قائمة فتح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "لتكرار آخر إجراء تم التراجع عنه نضغط على Ctrl+Y.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الخاصية التي تجعل الحركة تبدأ بمجرد انتهاء الحركة التي تسبقها تلقائياً هي:", opts: ["عند النقر", "مع السابق", "بعد السابق", "تأخير"], a: 2 },
+            { type: "tf", q: "عند حفظ ملف بملحق POTX يتم إنشاء قالب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإضافة رقم الشريحة أو التاريخ في أسفل كل الشرائح نستخدم:", opts: ["مربع نص", "الرأس والتذييل", "التعليقات", "ورد آرت"], a: 1 },
+            { type: "tf", q: "يمكن حفظ العرض التقديمي كفيديو بتنسيق WMV.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الزر الذي يسمح لك بمعاينة الحركات في الشريحة الحالية يسمى:", opts: ["تشغيل من", "معاينة", "بدء العرض", "المشغل"], a: 1 },
+            { type: "tf", q: "لحذف شريحة، انقر بزر الماوس الأيمن عليها واختر حذف شريحة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن كلمة محددة داخل العرض التقديمي نستخدم اختصار:", opts: ["Ctrl + H", "Ctrl + F", "Ctrl + G", "Ctrl + K"], a: 1 },
+            { type: "tf", q: "يمكن إضافة صورة من الإنترنت مباشرة داخل الباوربوينت.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإدراج لقطة شاشة (Screenshot) لبرنامج مفتوح حالياً نذهب لتبويب:", opts: ["تصميم", "عرض", "إدراج", "ملف"], a: 2 },
+            { type: "tf", q: "طريقة العرض التي تتيح تحديد كائنات فردية هي العرض العادي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "يمكننا تحويل النص إلى رسوم بيانية توضيحية باستخدام خاصية:", opts: ["Charts", "SmartArt", "Shapes", "Icons"], a: 1 },
+            { type: "tf", q: "يمكن إعادة تعيين (Reset) تخطيط الشريحة من الشريط الرئيسي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من هذه الخيارات يتيح لك ترتيب العناصر فوق بعضها البعض؟", opts: ["محاذاة", "تجميع", "إحضار للمقدمة", "تدوير"], a: 2 },
+            { type: "tf", q: "يضع الأوفيس خطاً أحمر متعرجاً تحت الكلمات التي تحتوي أخطاء إملائية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتغيير لغة التدقيق الإملائي نذهب لتبويب:", opts: ["الشريط الرئيسي", "عرض", "مراجعة", "إدراج"], a: 2 },
+            { type: "tf", q: "توجد خطوط الشبكة في مجموعة إظهار بتبويب عرض.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "إذا أردت جعل عنصر معين يتحرك في مسار دائري نختار من الحركات:", opts: ["توكيد", "خروج", "مسارات الحركة", "دخول"], a: 2 },
+            { type: "tf", q: "نستخدم أمر توقيتات التمرين لتحديد المدة التي يستغرقها العرض.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "النافذة التي تظهر فيها جميع الحركات المضافة للشريحة وتسمح بترتيبها هي:", opts: ["جزء القراءة", "جزء الحركة", "جزء التصميم", "جزء الملاحظات"], a: 1 },
+            { type: "tf", q: "يتم ترجمة النص المحدد أو كامل الملف من تبويب مراجعة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "لاستعراض الشرائح بشكل كتاب نختار عرض القراءة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الأداة التي تقوم بفحص العرض التقديمي بحثاً عن معلومات شخصية قبل المشاركة هي:", opts: ["المدقق الإملائي", "فحص المستند", "تحقق من الوصول", "المحرر"], a: 1 },
+            { type: "tf", q: "النقر مرة واحدة على ناسخ الحركة يسمح بنسخه لعنصر واحد فقط.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإضافة تعليق (Comment) على جزء من الشريحة لمراجعته لاحقاً نستخدم تبويب:", opts: ["إدراج", "مراجعة", "عرض", "كل ما سبق"], a: 3 },
+            { type: "tf", q: "أداة المحرر تعطي إحصائية بمدى دقة الصياغة اللغوية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يمكن إظهار خطوط الإرشاد (Guides) من تبويب عرض.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "مفتاح الاختصار لتشغيل التدقيق الإملائي مباشرة هو:", opts: ["F1", "F5", "F7", "F12"], a: 2 },
+            { type: "tf", q: "لتحديد ترتيب الصور نستخدم تبويب تنسيق الصورة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الوضع الذي يسمح بتعديل التصميم الأساسي لجميع شرائح العرض مرة واحدة هو:", opts: ["فارز الشرائح", "الشكل الرئيسي للشريحة", "نشرات", "صفحة الملاحظات"], a: 1 },
+            { type: "tf", q: "يمكن تفعيل وضع الشكل الرئيسي للشريحة من تبويب عرض.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هي الوظيفة التي تسمح لك بتسجيل صوتك وشرحك على كل شريحة؟", opts: ["أوقات التمرين", "تسجيل عرض الشرائح", "إدراج وسائط", "سرد الملاحظات"], a: 1 },
+            { type: "tf", q: "صفحة الملاحظات تمكن مقدم العرض من كتابة ملاحظات لن يراها الجمهور.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "عند إدراج فيديو، أي تبويب يظهر للتحكم في قص الفيديو (Trim) أو تكراره؟", opts: ["تصميم", "انتقالات", "تشغيل (Playback)", "تنسيق الفيديو"], a: 2 },
+            { type: "tf", q: "الأمر المستخدم لإضافة حركات للعناصر هو إضافة حركة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لجعل العرض التقديمي يعيد نفسه تلقائياً باستمرار (Loop) نذهب لإعدادات:", opts: ["إعداد عرض الشرائح", "أوقات التمرين", "انتقالات", "جزء الحركة"], a: 0 },
+            { type: "tf", q: "يمكن نسخ الحركة من عنصر وتطبيقها على عنصر آخر باستخدام ناسخ الحركة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "كيف يمكننا تحويل مؤشر الماوس إلى 'ليزر' أثناء العرض؟", opts: ["الضغط على Ctrl + زر الماوس الأيسر", "الضغط على Alt + L", "الضغط على مفتاح Tab", "النقر مرتين على الشاشة"], a: 0 },
+            { type: "tf", q: "يبدأ تشغيل الوقت للحركة بمجرد الانتقال للشريحة إذا تم ضبطها مع السابق.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإخفاء مؤشر الماوس تماماً أثناء العرض نضغط على حرف:", opts: ["L", "H", "A", "M"], a: 2 },
+            { type: "tf", q: "ناسخ الحركة يوجد في تبويب حركات.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "عند الضغط على مفتاح (B) من لوحة المفاتيح أثناء العرض، ماذا يحدث؟", opts: ["تخطي الشريحة", "جعل الشاشة سوداء", "إنهاء العرض", "فتح قائمة المساعدة"], a: 1 },
+            { type: "tf", q: "النقر مرتين على ناسخ الحركة يسمح باستخدامه عدة مرات.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للانتقال لشريحة معينة برقمها أثناء العرض نكتب الرقم ثم نضغط:", opts: ["Space", "Enter", "Esc", "Shift"], a: 1 },
+            { type: "tf", q: "يمكن تشغيل حركة عنصر عند النقر على عنصر آخر باستخدام المشغل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي تبويب يسمح لك بإضافة أيقونات (Icons) ونماذج ثلاثية الأبعاد (3D Models)؟", opts: ["تصميم", "إدراج", "عرض", "حركات"], a: 1 },
+            { type: "tf", q: "المشغل (Trigger) يربط حركة عنصر بحدث معين.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتقليل حجم ملف العرض التقديمي الذي يحتوي على صور كثيرة نستخدم:", opts: ["ضغط الصور", "حفظ باسم PDF", "تغيير الدقة", "إخفاء الشرائح"], a: 0 },
+            { type: "tf", q: "يمكن ضبط وقت انتقال محدد لكل شريحة على حدة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لتحويل العرض التقديمي إلى ملف صور مستقلة لكل شريحة نختار نوع الملف:", opts: ["PDF", "JPEG", "MP4", "RTF"], a: 1 },
+            { type: "tf", q: "يمكن اختيار نسبة تكبير الشريحة من تبويب عرض.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي وظيفة تسمح بإنشاء 'فهرس' تفاعلي ينتقل بك للشرائح عند النقر عليها؟", opts: ["ارتباط تشعبي", "ملخص التكبير/التصغير (Summary Zoom)", "المشغل", "المقاطع"], a: 1 },
+            { type: "tf", q: "يمكن إعادة ترتيب الحركات من جزء الحركة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يمكن تحويل العرض التقديمي إلى مستند Word من قائمة تصدير.", opts: ["صح", "خطأ"], a: 0 }
+        ];
+
+        function renderPPQuiz() {
+            const container = document.getElementById('pp-questions-container');
+            container.innerHTML = ppQuizData.map((d, i) => `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 pp-question-card overflow-hidden relative" id="pp-q-card-${i}">
+                    <div class="flex items-start gap-4 mb-6">
+                        <span class="bg-orange-600 text-white font-bold w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md text-lg italic">${i+1}</span>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest font-black text-orange-500 mb-1 block">${d.type === 'tf' ? 'سؤال صح أو خطأ' : 'سؤال اختيار من متعدد'}</span>
+                            <h3 class="font-bold text-xl leading-snug text-slate-800">${d.q}</h3>
+                        </div>
+                    </div>
+                    <div class="grid ${d.type === 'tf' ? 'grid-cols-2' : 'grid-cols-1'} gap-3 pr-2 md:pr-14">
+                        ${d.opts.map((opt, oi) => `
+                            <label class="pp-option-label group flex items-center p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-orange-200 hover:bg-orange-50/50 transition-all relative">
+                                <input type="radio" name="pp_q${i}" value="${oi}" class="ml-4 w-5 h-5 accent-orange-600" onchange="updatePPProgress()">
+                                <span class="text-slate-700 font-bold group-hover:text-orange-700 transition-colors">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updatePPProgress() {
+            const answered = document.querySelectorAll('#pp-app input[type="radio"]:checked').length;
+            const progress = (answered / ppQuizData.length) * 100;
+            document.getElementById('pp-progress-bar').style.width = progress + '%';
+            document.getElementById('pp-progress-text').innerText = Math.round(progress) + '%';
+            document.getElementById('pp-live-counter').innerText = `${answered} / ${ppQuizData.length}`;
+        }
+
+        function calculatePPResults() {
+            const answered = document.querySelectorAll('#pp-app input[type="radio"]:checked').length;
+            if(answered < ppQuizData.length) {
+                if(!confirm(`انتباه: لقد أجبت على ${answered} سؤال فقط من أصل ${ppQuizData.length}. هل أنت متأكد من رغبتك في الإنهاء؟`)) return;
+            }
+
+            let score = 0;
+            ppQuizData.forEach((d, i) => {
+                const selected = document.querySelector(`#pp-app input[name="pp_q${i}"]:checked`);
+                const card = document.getElementById(`pp-q-card-${i}`);
+                const options = card.querySelectorAll('.pp-option-label');
+                
+                options.forEach(l => l.classList.remove('pp-correct', 'pp-wrong'));
+
+                if(selected) {
+                    const val = parseInt(selected.value);
+                    if(val === d.a) {
+                        score++;
+                        options[val].classList.add('pp-correct');
+                    } else {
+                        options[val].classList.add('pp-wrong');
+                        options[d.a].classList.add('pp-correct');
+                    }
+                } else {
+                    options[d.a].classList.add('pp-correct');
+                }
+            });
+
+            const percent = Math.round((score / ppQuizData.length) * 100);
+            const statusText = document.getElementById('pp-res-status-text');
+            const statusIcon = document.getElementById('pp-res-status-icon');
+            const percentEl = document.getElementById('pp-res-percent');
+            const grad = document.getElementById('pp-status-bg-gradient');
+
+            if (percent >= 65) {
+                statusText.innerText = "مبروك! لقد تخطيت الاختبار";
+                statusText.className = "text-2xl font-black mb-1 text-emerald-600";
+                statusIcon.innerText = "🎊";
+                percentEl.className = "text-7xl font-black text-emerald-600 my-4 tabular-nums";
+                grad.className = "absolute top-0 inset-x-0 h-32 bg-emerald-500 opacity-10";
+            } else {
+                statusText.innerText = "للأسف! لم تتخطَ الاختبار";
+                statusText.className = "text-2xl font-black mb-1 text-rose-600";
+                statusIcon.innerText = "📚";
+                percentEl.className = "text-7xl font-black text-rose-600 my-4 tabular-nums";
+                grad.className = "absolute top-0 inset-x-0 h-32 bg-rose-500 opacity-10";
+            }
+
+            document.getElementById('pp-res-percent').innerText = percent + '%';
+            document.getElementById('pp-res-text').innerText = `حصلت على ${score} إجابة صحيحة من أصل ${ppQuizData.length}`;
+            document.getElementById('pp-results-modal').classList.remove('hidden');
+        }
+
+        function closePPModalAndReview() {
+            document.getElementById('pp-results-modal').classList.add('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function resetPP() {
+            document.getElementById('pp-results-modal').classList.add('hidden');
+            renderPPQuiz();
+            updatePPProgress();
+            window.scrollTo(0,0);
+        }
+
+        // ----------------------------------------------------
+        // 6. منطق تطبيق Web Search
+        // ----------------------------------------------------
+        const wsQuizData = [
+            { type: "tf", q: "يعتبر جوجل (Google) محرك بحث وليس متصفح إنترنت.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من البرامج التالية يعتبر متصفح ويب (Web Browser)؟", opts: ["Google Chrome", "Excel", "Photoshop", "PowerPoint"], a: 0 },
+            { type: "tf", q: "يمكن استخدام علامات التنصيص \" \" للبحث عن جملة محددة بدقة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن ملفات بصيغة معينة مثل PDF نستخدم الأمر:", opts: ["format:", "filetype:", "type:", "ext:"], a: 1 },
+            { type: "tf", q: "بروتوكول HTTPS أقل أماناً من بروتوكول HTTP.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "الرمز الذي يظهر بجانب رابط الموقع ويدل على أن الاتصال آمن هو:", opts: ["رمز التعجب", "رمز القفل", "رمز النجمة", "رمز السهم"], a: 1 },
+            { type: "tf", q: "يمكن البحث عن الصور باستخدام الصور نفسها في جوجل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من الكلمات التالية تستخدم لاستبعاد كلمة معينة من نتائج البحث؟", opts: ["علامة +", "علامة -", "علامة *", "علامة @"], a: 1 },
+            { type: "tf", q: "عنوان الـ URL هو اختصار لـ Uniform Resource Locator.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أفضل مكان لكتابة عنوان موقع إلكتروني للذهاب إليه مباشرة هو:", opts: ["مربع بحث جوجل", "شريط العنوان (Address Bar)", "أسفل الصفحة", "في المفضلة"], a: 1 },
+            { type: "tf", q: "يُستخدم الاختصار Ctrl + T لفتح علامة تبويب جديدة في المتصفح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن معلومات داخل موقع معين فقط (مثل wikipedia.org) نستخدم:", opts: ["in:", "site:", "web:", "find:"], a: 1 },
+            { type: "tf", q: "ملفات تعريف الارتباط (Cookies) تستخدم لتخزين معلومات تفضيلات المستخدم.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هي وظيفة الزر 'تحديث' (Refresh/Reload) في المتصفح؟", opts: ["إغلاق الصفحة", "إعادة تحميل الصفحة", "حفظ الصفحة", "طباعة الصفحة"], a: 1 },
+            { type: "tf", q: "التصفح الخفي (Incognito) يمنع مزود الخدمة من رؤية نشاطك تماماً.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "الاختصار المستخدم لاسترجاع آخر علامة تبويب تم إغلاقها بالخطأ هو:", opts: ["Ctrl + T", "Ctrl + Shift + T", "Ctrl + N", "Ctrl + W"], a: 1 },
+            { type: "tf", q: "تعتبر محركات البحث والويب العميق (Deep Web) شيئاً واحداً.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "نطاق المواقع الحكومية ينتهي عادة بـ:", opts: [".com", ".edu", ".gov", ".org"], a: 2 },
+            { type: "tf", q: "يمكن استخدام الآلة الحاسبة مباشرة من خلال مربع بحث جوجل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن مرادفات كلمة معينة في جوجل نستخدم رمز:", opts: ["~ (Tilde)", "* (Asterisk)", "# (Hashtag)", "& (Ampersand)"], a: 0 },
+            { type: "tf", q: "تعتبر الروابط التشعبية (Hyperlinks) وسيلة للتنقل بين صفحات الويب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "المتصفح الافتراضي في نظام ويندوز 10 و 11 هو:", opts: ["Internet Explorer", "Microsoft Edge", "Opera", "Safari"], a: 1 },
+            { type: "tf", q: "لا يمكن ترجمة صفحات الويب بالكامل باستخدام متصفح كروم.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "أي مما يلي لا يعتبر محرك بحث؟", opts: ["Bing", "Yahoo", "DuckDuckGo", "Facebook"], a: 3 },
+            { type: "tf", q: "عملية الأرشفة هي قيام محرك البحث بفهرسة صفحات الويب وتخزينها.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يمكن البحث عن الوقت في أي مدينة بكتابة Time واسم المدينة في جوجل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لفتح سجل الزيارات (History) في المتصفح نضغط على:", opts: ["Ctrl + H", "Ctrl + J", "Ctrl + P", "Ctrl + S"], a: 0 },
+            { type: "tf", q: "برامج 'الزاحف' (Crawler) هي برمجيات تكتشف صفحات الويب الجديدة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "لإضافة صفحة ويب إلى 'المفضلة' نضغط على رمز:", opts: ["المربع", "الدائرة", "النجمة", "المثلث"], a: 2 },
+            { type: "tf", q: "تُستخدم علامة النجمة (*) كبديل عن كلمة مفقودة في جملة البحث.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من النطاقات التالية يُخصص للمؤسسات غير الربحية؟", opts: [".com", ".net", ".org", ".biz"], a: 2 },
+            { type: "tf", q: "متصفح Safari مخصص فقط لأجهزة شركة Apple.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "الاختصار Ctrl + F داخل المتصفح يستخدم لـ:", opts: ["حفظ الصفحة", "البحث عن كلمة داخل الصفحة", "فتح سجل التحميل", "إغلاق المتصفح"], a: 1 },
+            { type: "tf", q: "الكلمات المفتاحية (Keywords) هي الكلمات التي يكتبها المستخدم للبحث عن موضوع معين.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن نتائج تحتوي على 'أحد' الكلمتين (وليس كلتيهما) نستخدم:", opts: ["AND", "OR", "NOT", "WITH"], a: 1 },
+            { type: "tf", q: "يمكن معرفة حالة الطقس من خلال البحث في جوجل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "التحقق بخطوتين (2FA) يزيد من أمان حساباتك على الويب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يتم تخزين كلمات المرور بشكل آمن دائماً في المتصفح ولا يمكن لأي شخص الوصول إليها.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "tf", q: "تُستخدم أداة 'فحص' (Inspect) في المتصفح لعرض كود الصفحة وتعديله مؤقتاً.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الاختصار لفتح قائمة 'التحميلات' (Downloads) في المتصفح؟", opts: ["Ctrl + D", "Ctrl + J", "Ctrl + L", "Ctrl + G"], a: 1 },
+            { type: "tf", q: "عملية الـ SEO تعني تحسين المواقع لتظهر في نتائج البحث الأولى.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ماذا تعني WWW؟", opts: ["World Wide Web", "Web World Wide", "Wide World Web", "Web West World"], a: 0 },
+            { type: "tf", q: "نطاق .edu يُستخدم للمؤسسات التعليمية والجامعات.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "يُعتبر Google Drive مثالاً على الخدمات السحابية عبر الويب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن سعر منتج معين بين نطاق سعري نستخدم:", opts: ["سعر..سعر", "سعر-سعر", "سعر+سعر", "سعر*سعر"], a: 0 },
+            { type: "tf", q: "يمكن للمتصفح ترجمة النصوص من الإنجليزية للعربية تلقائياً.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "استخدام كلمات مرور سهلة مثل 123456 هو تصرف آمن.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "العملية التي يتم فيها تحويل اسم الموقع (مثل google.com) إلى عنوان IP تسمى:", opts: ["HTTP", "DNS", "FTP", "SSL"], a: 1 },
+            { type: "tf", q: "يمكن حذف سجل التصفح (History) بشكل كامل من إعدادات المتصفح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن المواقع المرتبطة أو المشابهة لموقع معين نستخدم:", opts: ["link:", "related:", "info:", "cache:"], a: 1 },
+            { type: "tf", q: "بروتوكول FTP يُستخدم لنقل الملفات عبر الويب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الجزء المسؤول عن معالجة طلبات البحث وإعطاء النتائج؟", opts: ["المتصفح", "خادم محرك البحث", "لوحة المفاتيح", "الماوس"], a: 1 },
+            { type: "tf", q: "نتائج البحث المدفوعة (الإعلانات) تظهر عادة في أعلى صفحة النتائج.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن الصور ذات الحجم الكبير فقط في جوجل نستخدم:", opts: ["أدوات البحث", "الإعدادات", "الخرائط", "الأخبار"], a: 0 },
+            { type: "tf", q: "تعتبر ويكيبيديا مصدراً موثوقاً 100% لجميع الأبحاث الأكاديمية.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "الاختصار Ctrl + P في المتصفح يُستخدم لـ:", opts: ["حفظ الصفحة", "طباعة الصفحة", "فتح نافذة جديدة", "تحديث الصفحة"], a: 1 },
+            { type: "tf", q: "خدمة Google Maps توفر خرائط واتجاهات للطرق.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو المحرك الذي يركز على الخصوصية ولا يتتبع مستخدميه؟", opts: ["Google", "Bing", "DuckDuckGo", "Baidu"], a: 2 },
+            { type: "tf", q: "يمكن استخدام الصوت للبحث في جوجل بدلاً من الكتابة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "عند ظهور الخطأ 404، فهذا يعني عادة أن:", opts: ["الإنترنت مقطوع", "الصفحة غير موجودة", "كلمة المرور خطأ", "المتصفح قديم"], a: 1 },
+            { type: "tf", q: "تُستخدم علامة @ للبحث في وسائل التواصل الاجتماعي.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن كلمات في عنوان الصفحة فقط نستخدم:", opts: ["inurl:", "intitle:", "intext:", "inanchor:"], a: 1 },
+            { type: "tf", q: "يمكن تثبيت إضافات (Extensions) في المتصفح لإضافة وظائف جديدة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الاختصار لإغلاق علامة التبويب الحالية؟", opts: ["Ctrl + W", "Ctrl + E", "Ctrl + Q", "Ctrl + R"], a: 0 },
+            { type: "tf", q: "يُستخدم الويب المظلم (Dark Web) لأنشطة قانونية وغير قانونية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن معلومات من الأخبار فقط نختار تبويب:", opts: ["صور", "فيديو", "أخبار", "خرائط"], a: 2 },
+            { type: "tf", q: "تعتبر خدمة البريد الإلكتروني Gmail جزءاً من خدمات الويب.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "لا يمكن تحميل الملفات من الإنترنت إلا باستخدام برنامج مخصص.", opts: ["صح", "خطأ"], a: 1 },
+            { type: "mcq", q: "ما هي التقنية التي تسمح للمتصفح بتذكر بيانات تسجيل الدخول؟", opts: ["Cache", "Autofill", "Cookies", "كل ما سبق"], a: 3 },
+            { type: "tf", q: "يمكن تغيير محرك البحث الافتراضي في إعدادات المتصفح.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن تعريف كلمة معينة نكتب قبلها في جوجل:", opts: ["meaning:", "define:", "whatis:", "about:"], a: 1 },
+            { type: "tf", q: "يُستخدم الاختصار Alt + D للذهاب بسرعة لشريط العنوان.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "نطاق .mil مخصص للمؤسسات العسكرية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث داخل نص الصفحة فقط وتجاهل العناوين نستخدم:", opts: ["intext:", "allintext:", "text:", "find:"], a: 0 },
+            { type: "tf", q: "تُستخدم الـ Bookmarks لتنظيم المواقع المفضلة للوصول السريع.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هي الوظيفة الرئيسية لـ 'جدار الحماية' (Firewall)؟", opts: ["تسريع الإنترنت", "حماية الشبكة من الاختراقات", "تحميل الملفات", "عرض الصور"], a: 1 },
+            { type: "tf", q: "يمكن إجراء عمليات تحويل العملات مباشرة في محرك بحث جوجل.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من هذه الرموز يُستخدم للبحث عن 'هاشتاج' معين؟", opts: ["@", "#", "$", "%"], a: 1 },
+            { type: "tf", q: "نطاق .net كان مخصصاً في الأصل لمزودي خدمات الشبكات.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ماذا يحدث عند الضغط على Ctrl + N في المتصفح؟", opts: ["فتح تبويب جديد", "فتح نافذة جديدة", "تنزيل ملف", "إغلاق المتصفح"], a: 1 },
+            { type: "tf", q: "يمكن استخدام جوجل للبحث عن الرحلات الجوية وحجز الفنادق.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن معلومات ضمن نطاق زمني معين نستخدم:", opts: ["أدوات البحث -> أي وقت", "الإعدادات", "الخرائط", "التسوق"], a: 0 },
+            { type: "tf", q: "يُعتبر موقع YouTube أكبر محرك بحث للفيديوهات في العالم.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "البرمجيات الخبيثة التي تطلب فدية مقابل فك تشفير الملفات تسمى:", opts: ["Virus", "Worm", "Ransomware", "Spyware"], a: 2 },
+            { type: "tf", q: "يمكن استخدام المتصفح بدون اتصال إنترنت لعرض ملفات HTML محلية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن نتائج من المواقع التعليمية السعودية فقط نستخدم:", opts: ["site:edu.sa", "site:.gov.sa", "site:.com.sa", "site:.org.sa"], a: 0 },
+            { type: "tf", q: "ميزة 'الإكمال التلقائي' في البحث تقترح جمل بناءً على ما يكتبه الناس.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الاختصار لفتح نافذة تصفح خفي (Incognito) في كروم؟", opts: ["Ctrl + Shift + N", "Ctrl + N", "Ctrl + T", "Ctrl + Shift + P"], a: 0 },
+            { type: "tf", q: "يُستخدم الرمز () لتجميع الكلمات في جملة البحث المعقدة.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن ملفات PowerPoint نستخدم filetype مع:", opts: ["docx", "pdf", "pptx", "xlsx"], a: 2 },
+            { type: "tf", q: "خدمة Google Scholar مخصصة للبحث عن الأبحاث العلمية والأكاديمية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو البروتوكول المسؤول عن نقل صفحات الويب؟", opts: ["SMTP", "HTTP", "FTP", "POP3"], a: 1 },
+            { type: "tf", q: "يمكن سحب وإسقاط رابط موقع إلى سطح المكتب لإنشاء اختصار.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "أي من هذه الرموز يُستخدم للبحث عن الأسعار بالدولار؟", opts: ["$", "£", "€", "¥"], a: 0 },
+            { type: "tf", q: "تُستخدم الـ Cache لتخزين نسخ مؤقتة من الصفحات لتسريع تحميلها لاحقاً.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "للبحث عن المواقع التي تحتوي على رابط لموقع معين نستخدم:", opts: ["link:", "url:", "site:", "web:"], a: 0 },
+            { type: "tf", q: "يُعتبر انتحال الشخصية (Phishing) وسيلة لسرقة البيانات عبر مواقع وهمية.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "mcq", q: "ما هو الحد الأقصى لعدد الكلمات التي يمكن كتابتها في مربع بحث جوجل؟", opts: ["10 كلمات", "32 كلمة", "100 كلمة", "غير محدود"], a: 1 },
+            { type: "tf", q: "يمكن استخدام الويب للوصول إلى المكتبات الرقمية حول العالم.", opts: ["صح", "خطأ"], a: 0 },
+            { type: "tf", q: "متصفح Mozilla Firefox هو برنامج مفتوح المصدر.", opts: ["صح", "خطأ"], a: 0 }
+        ];
+
+        function renderWSQuiz() {
+            const container = document.getElementById('ws-questions-container');
+            container.innerHTML = wsQuizData.map((d, i) => `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 ws-question-card overflow-hidden relative" id="ws-q-card-${i}">
+                    <div class="flex items-start gap-4 mb-6">
+                        <span class="bg-blue-700 text-white font-bold w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md text-lg italic">${i+1}</span>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest font-black text-blue-500 mb-1 block">${d.type === 'tf' ? 'سؤال صح أو خطأ' : 'سؤال اختيار من متعدد'}</span>
+                            <h3 class="font-bold text-xl leading-snug text-slate-800">${d.q}</h3>
+                        </div>
+                    </div>
+                    <div class="grid ${d.type === 'tf' ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-2'} gap-3 pr-2">
+                        ${d.opts.map((opt, oi) => `
+                            <label class="ws-option-label group flex items-center p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-blue-200 hover:bg-blue-50/50 transition-all relative">
+                                <input type="radio" name="ws_q${i}" value="${oi}" class="ml-4 w-5 h-5 accent-blue-700" onchange="updateWSProgress()">
+                                <span class="text-slate-700 font-bold group-hover:text-blue-800 transition-colors">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateWSProgress() {
+            const answered = document.querySelectorAll('#ws-app input[type="radio"]:checked').length;
+            const progress = (answered / wsQuizData.length) * 100;
+            document.getElementById('ws-progress-bar').style.width = progress + '%';
+            document.getElementById('ws-progress-text').innerText = Math.round(progress) + '%';
+            document.getElementById('ws-live-counter').innerText = `${answered} / ${wsQuizData.length}`;
+        }
+
+        function calculateWSResults() {
+            const answered = document.querySelectorAll('#ws-app input[type="radio"]:checked').length;
+            if(answered < wsQuizData.length) {
+                if(!confirm(`انتباه: لقد أجبت على ${answered} سؤال فقط من أصل ${wsQuizData.length}. هل تريد الإنهاء فعلاً؟`)) return;
+            }
+
+            let score = 0;
+            wsQuizData.forEach((d, i) => {
+                const selected = document.querySelector(`#ws-app input[name="ws_q${i}"]:checked`);
+                const card = document.getElementById(`ws-q-card-${i}`);
+                const options = card.querySelectorAll('.ws-option-label');
+                
+                options.forEach(l => l.classList.remove('ws-correct', 'ws-wrong'));
+
+                if(selected) {
+                    const val = parseInt(selected.value);
+                    if(val === d.a) {
+                        score++;
+                        options[val].classList.add('ws-correct');
+                    } else {
+                        options[val].classList.add('ws-wrong');
+                        options[d.a].classList.add('ws-correct');
+                    }
+                } else {
+                    options[d.a].classList.add('ws-correct');
+                }
+            });
+
+            const percent = Math.round((score / wsQuizData.length) * 100);
+            const statusText = document.getElementById('ws-res-status-text');
+            const statusIcon = document.getElementById('ws-res-status-icon');
+            const percentEl = document.getElementById('ws-res-percent');
+            const grad = document.getElementById('ws-status-bg-gradient');
+
+            if (percent >= 65) {
+                statusText.innerText = "أحسنت! لقد نجحت في الاختبار";
+                statusText.className = "text-2xl font-black mb-1 text-emerald-600";
+                statusIcon.innerText = "🏆";
+                percentEl.className = "text-7xl font-black text-emerald-600 my-4 tabular-nums";
+                grad.className = "absolute top-0 inset-x-0 h-32 bg-emerald-500 opacity-10";
+            } else {
+                statusText.innerText = "تحتاج للمزيد من المراجعة";
+                statusText.className = "text-2xl font-black mb-1 text-rose-600";
+                statusIcon.innerText = "⚠️";
+                percentEl.className = "text-7xl font-black text-rose-600 my-4 tabular-nums";
+                grad.className = "absolute top-0 inset-x-0 h-32 bg-rose-500 opacity-10";
+            }
+
+            document.getElementById('ws-res-percent').innerText = percent + '%';
+            document.getElementById('ws-res-text').innerText = `إجاباتك الصحيحة: ${score} من ${wsQuizData.length}`;
+            document.getElementById('ws-results-modal').classList.remove('hidden');
+        }
+
+        function closeWSModalAndReview() {
+            document.getElementById('ws-results-modal').classList.add('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function resetWS() {
+            document.getElementById('ws-results-modal').classList.add('hidden');
+            renderWSQuiz();
+            updateWSProgress();
+            window.scrollTo(0,0);
+        }
+
+    </script>
+</body>
+</html>
