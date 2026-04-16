@@ -118,7 +118,7 @@
         #mo-app .mo-option { display: flex; align-items: center; padding: 14px 20px; border: 2px solid #edf2f7; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 17px; }
         #mo-app .mo-option:hover { background-color: #f7fafc; border-color: #cbd5e0; }
         #mo-app .mo-option input { margin-left: 15px; width: 18px; height: 18px; cursor: pointer; }
-        #mo-app .mo-btn-container { position: sticky; bottom: 20px; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); text-align: center; }
+        #mo-app .mo-btn-container { position: sticky; bottom: 20px; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); text-align: center; z-index: 10; }
         #mo-app button#mo-submit-btn { width: 80%; padding: 18px; background-color: var(--secondary-color); color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3); }
         #mo-app button#mo-submit-btn:hover { background-color: #2980b9; transform: translateY(-2px); }
         #mo-app #mo-result-section { display: none; text-align: center; margin-top: 40px; padding: 40px; border-radius: 15px; background: #fff; border: 4px solid var(--success-color); }
@@ -233,7 +233,7 @@
 
             <div id="cy-quiz-screen" class="p-6 md:p-10">
                 <div id="cy-questions-list" class="space-y-12"></div>
-                <div class="mt-16 p-8 border-t border-gray-100 text-center bg-gray-50 rounded-b-2xl">
+                <div id="cy-submit-area" class="mt-16 p-8 border-t border-gray-100 text-center bg-gray-50 rounded-b-2xl">
                     <button onclick="finishCyberQuiz()" id="cy-submit-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-bold py-4 px-16 rounded-xl shadow-xl transition-all active:scale-95">
                         إرسال الإجابات والتقييم
                     </button>
@@ -246,8 +246,12 @@
                 <div class="text-7xl font-bold text-slate-800 mb-4" id="cy-final-score">0 / 100</div>
                 <div id="cy-result-status" class="text-3xl font-bold mb-4"></div>
                 <div id="cy-result-message" class="text-xl text-gray-600 mb-10 leading-relaxed max-w-lg mx-auto"></div>
-                <button onclick="resetCyber()" class="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-lg">إعادة المحاولة</button>
-                <button onclick="goHome()" class="mt-4 bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg">العودة للقائمة الرئيسية</button>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto">
+                    <button onclick="resetCyber()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-lg">إعادة المحاولة</button>
+                    <button onclick="reviewCyber()" class="bg-slate-100 text-slate-800 border-2 border-slate-300 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition-colors shadow-lg">مراجعة الأخطاء</button>
+                </div>
+                <button onclick="goHome()" class="mt-4 w-full max-w-lg mx-auto block bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg">العودة للقائمة الرئيسية</button>
             </div>
         </div>
     </div>
@@ -331,7 +335,7 @@
 
             <form id="mo-quiz-form">
                 <div id="mo-questions-container"></div>
-                <div class="mo-btn-container">
+                <div class="mo-btn-container" id="mo-submit-area">
                     <button type="button" id="mo-submit-btn" onclick="calculateMobileScore()">إنهاء الاختبار وعرض النتيجة</button>
                 </div>
             </form>
@@ -343,8 +347,9 @@
                     <span style="font-size: 14px; color: #666;">من 120</span>
                 </div>
                 <p id="mo-result-message" style="font-size: 20px; font-weight: bold;"></p>
-                <div class="mt-6 flex justify-center gap-4">
+                <div class="mt-6 flex flex-wrap justify-center gap-4">
                     <button type="button" onclick="resetMobile()" style="background: #4a5568; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px;">إعادة الاختبار</button>
+                    <button type="button" onclick="reviewMobile()" style="background: #e2e8f0; color: #2d3748; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">مراجعة الأخطاء</button>
                     <button type="button" onclick="goHome()" style="background: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px;">القائمة الرئيسية</button>
                 </div>
             </div>
@@ -642,6 +647,33 @@
                 if(ans === cyberQuestions[i].correct) score++;
             });
 
+            // تعليم الإجابات الصحيحة والخاطئة
+            cyberQuestions.forEach((q, i) => {
+                const buttons = document.querySelectorAll(`#cy-q-block-${i} .cy-option-btn`);
+                buttons.forEach(btn => {
+                    btn.onclick = null; // إيقاف التعديل
+                    btn.classList.add('cursor-default');
+                });
+                const correctIdx = q.correct;
+                const userIdx = cyberUserAnswers[i];
+
+                // تعليم الإجابة الصحيحة
+                buttons[correctIdx].classList.remove('border-gray-200');
+                buttons[correctIdx].classList.add('border-emerald-500', 'bg-emerald-50');
+                if(!buttons[correctIdx].innerHTML.includes('إجابة صحيحة')) {
+                    buttons[correctIdx].innerHTML += '<span class="mr-auto text-emerald-600 text-sm font-bold bg-emerald-100 px-3 py-1 rounded-full">✓ إجابة صحيحة</span>';
+                }
+
+                // تعليم الإجابة الخاطئة إذا اختارها المستخدم
+                if (userIdx !== null && userIdx !== correctIdx) {
+                    buttons[userIdx].classList.remove('border-emerald-500', 'bg-emerald-50', 'cy-selected-option');
+                    buttons[userIdx].classList.add('border-red-500', 'bg-red-50');
+                    if(!buttons[userIdx].innerHTML.includes('إجابة خاطئة')) {
+                        buttons[userIdx].innerHTML += '<span class="mr-auto text-red-600 text-sm font-bold bg-red-100 px-3 py-1 rounded-full">✗ إجابة خاطئة</span>';
+                    }
+                }
+            });
+
             const percent = (score / cyberQuestions.length) * 100;
             const passingScore = 65; 
 
@@ -675,9 +707,17 @@
             window.scrollTo(0,0);
         }
 
+        function reviewCyber() {
+            document.getElementById('cy-result-screen').classList.add('hidden');
+            document.getElementById('cy-quiz-screen').classList.remove('hidden');
+            document.getElementById('cy-submit-area').style.display = 'none'; // إخفاء زر التسليم
+            window.scrollTo(0,0);
+        }
+
         function resetCyber() {
             document.getElementById('cy-quiz-screen').classList.remove('hidden');
             document.getElementById('cy-result-screen').classList.add('hidden');
+            document.getElementById('cy-submit-area').style.display = 'block'; // إظهار زر التسليم مجدداً
             initCyber();
             updateCyberProgress();
             window.scrollTo(0,0);
@@ -1286,6 +1326,9 @@
                 if (!confirm(`لقد أجبت على ${answered} سؤال فقط من أصل ${total}. هل تريد المتابعة وعرض النتيجة؟`)) return;
             }
 
+            // تعطيل الحقول وتحديد الإجابات
+            form.querySelectorAll('input').forEach(inp => inp.disabled = true);
+
             mobileQuestions.forEach((item, index) => {
                 const selected = form.querySelector(`input[name="mo_q${index}"]:checked`);
                 const feedbackDiv = document.getElementById(`mo-feedback-${index}`);
@@ -1296,18 +1339,18 @@
                     if (answerIndex === item.correct) {
                         score++;
                         card.classList.add('mo-correct-answer');
-                        feedbackDiv.innerHTML = `<span class="text-green-700 font-bold">✓ إجابة صحيحة</span>`;
+                        feedbackDiv.innerHTML = `<span class="text-green-700 font-bold" style="color: #27ae60;">✓ إجابة صحيحة</span>`;
                     } else {
                         card.classList.add('mo-wrong-answer');
-                        feedbackDiv.innerHTML = `<span class="text-red-700 font-bold">✗ إجابة خاطئة. الصحيح: ${item.options[item.correct]}</span>`;
+                        feedbackDiv.innerHTML = `<span class="text-red-700 font-bold" style="color: #e74c3c;">✗ إجابة خاطئة. الإجابة الصحيحة هي: ${item.options[item.correct]}</span>`;
                     }
                 } else {
                     card.classList.add('mo-wrong-answer');
-                    feedbackDiv.innerHTML = `<span class="text-red-700 font-bold">لم يتم الإجابة. الصحيح: ${item.options[item.correct]}</span>`;
+                    feedbackDiv.innerHTML = `<span class="text-red-700 font-bold" style="color: #e74c3c;">⚠️ لم يتم الإجابة. الإجابة الصحيحة هي: ${item.options[item.correct]}</span>`;
                 }
 
                 if (item.note) {
-                    feedbackDiv.innerHTML += `<br><small style="color: #4a5568;">توضيح: ${item.note}</small>`;
+                    feedbackDiv.innerHTML += `<br><small style="color: #4a5568; margin-top: 5px; display: inline-block;">💡 توضيح: ${item.note}</small>`;
                 }
             });
 
@@ -1326,9 +1369,17 @@
             window.scrollTo(0,0);
         }
 
+        function reviewMobile() {
+            document.getElementById('mo-result-section').style.display = 'none';
+            document.getElementById('mo-quiz-form').style.display = 'block';
+            document.getElementById('mo-submit-area').style.display = 'none'; // إخفاء زر التسليم
+            window.scrollTo(0,0);
+        }
+
         function resetMobile() {
             document.getElementById('mo-quiz-form').style.display = 'block';
             document.getElementById('mo-result-section').style.display = 'none';
+            document.getElementById('mo-submit-area').style.display = 'block'; // إظهار زر التسليم مجدداً
             initMobile();
             updateMobileProgress();
             window.scrollTo(0,0);
