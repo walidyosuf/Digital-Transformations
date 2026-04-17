@@ -15,6 +15,11 @@
             padding: 0;
         }
 
+        /* فلترة الإجابات الصحيحة والخاطئة (ميزة عامة) */
+        .show-only-wrong .is-correct {
+            display: none !important;
+        }
+
         /* =========================================
            أنماط التطبيق 1: Cyber Security
            ========================================= */
@@ -222,9 +227,10 @@
     <div id="cy-app" class="app-container hidden p-4 md:p-8">
         <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden mb-8">
             <div class="bg-slate-800 p-6 text-white text-center cy-sticky-header shadow-lg relative">
+                <button id="cy-filter-btn" onclick="toggleCyberFilter()" class="hidden absolute left-4 top-4 bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition">إظهار الأخطاء فقط</button>
                 <button onclick="goHome()" class="absolute right-4 top-4 bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition">الرجوع للقائمة</button>
-                <h1 class="text-2xl font-bold mt-8 md:mt-0">امتحان الأمن السيبراني (Cyber Security)</h1>
-                <p class="text-slate-300 mt-2 text-sm">أسئلة تحديث مارس 2026 - طبقاً للفيديو المرفق</p>
+                <h1 class="text-2xl font-bold mt-12 md:mt-0">امتحان الأمن السيبراني (Cyber Security)</h1>
+                <p class="text-slate-300 mt-2 text-sm">أسئلة تحديث مارس 2026 - طبقاً للفيديوهات المرفقة</p>
                 <div id="cy-progress-bar" class="w-full bg-slate-700 h-2 mt-4 rounded-full overflow-hidden">
                     <div id="cy-progress-fill" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
                 </div>
@@ -278,6 +284,7 @@
                 <div class="ex-review-header flex justify-between items-center bg-gray-50 p-4 rounded-lg mt-4">
                     <span>مراجعة الإجابات أدناه:</span>
                     <div>
+                        <button id="ex-filter-btn" class="ex-secondary" style="background:#d93025; display:none;" onclick="toggleExcelFilter()">إظهار الأخطاء فقط</button>
                         <button class="ex-secondary" onclick="resetExcel()">إعادة الاختبار</button>
                         <button onclick="goHome()" style="background:#217346;">القائمة الرئيسية</button>
                     </div>
@@ -306,8 +313,11 @@
                         <h2 id="it-score-title" style="margin: 0 0 10px 0;">النتيجة: 0/90</h2>
                         <div id="it-status-badge" style="display:inline-block; padding: 5px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 10px;"></div>
                         <p id="it-evaluation" style="font-size: 16px; margin: 0; font-weight: bold;"></p>
-                        <button onclick="resetIT()" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">إعادة الاختبار</button>
-                        <button onclick="goHome()" style="margin-top:15px; background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">القائمة الرئيسية</button>
+                        <div class="mt-4 flex flex-wrap justify-center gap-2">
+                            <button id="it-filter-btn" onclick="toggleITFilter()" style="display:none; background:var(--error); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">إظهار الأخطاء فقط</button>
+                            <button onclick="resetIT()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">إعادة الاختبار</button>
+                            <button onclick="goHome()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold">القائمة الرئيسية</button>
+                        </div>
                     </div>
 
                     <div id="it-counter">لم يتم حل أي سؤال بعد</div>
@@ -332,6 +342,10 @@
                 <p class="mo-subtitle">شامل أسئلة التحول الرقمي - تحديث يناير 2026</p>
                 <div class="mo-progress-bar"><div id="mo-progress" class="mo-progress-fill"></div></div>
             </header>
+
+            <div id="mo-review-tools" class="hidden text-center mb-6">
+                <button id="mo-filter-btn" onclick="toggleMobileFilter()" style="background:#e74c3c; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;">إظهار الأخطاء فقط</button>
+            </div>
 
             <form id="mo-quiz-form">
                 <div id="mo-questions-container"></div>
@@ -362,12 +376,15 @@
     <div id="pp-app" class="app-container hidden pb-24 text-gray-900 selection:bg-orange-100 bg-[#f8fafc]">
         <header class="bg-orange-600 text-white shadow-md sticky top-0 z-50">
             <div class="max-w-4xl mx-auto p-4 flex justify-between items-center">
-                <div>
-                    <button onclick="goHome()" class="bg-orange-800 hover:bg-orange-900 text-white px-3 py-1 rounded text-sm mb-2 font-bold transition">الرجوع للقائمة</button>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="goHome()" class="bg-orange-800 hover:bg-orange-900 text-white px-3 py-1 rounded text-sm font-bold transition">الرجوع للقائمة</button>
+                    <button id="pp-filter-btn" onclick="togglePPFilter()" class="hidden bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-sm font-bold transition">إظهار الأخطاء فقط</button>
+                </div>
+                <div class="hidden sm:block text-center flex-1">
                     <h1 class="text-xl font-bold">مراجعة PowerPoint الشاملة</h1>
                     <p class="text-xs opacity-90 text-orange-100">مطابق تماماً لمحتوى الفيديو التعليمي</p>
                 </div>
-                <div id="pp-live-counter" class="bg-orange-700 px-4 py-2 rounded-xl text-sm font-bold shadow-inner">0 / 100</div>
+                <div id="pp-live-counter" class="bg-orange-700 px-4 py-2 rounded-xl text-sm font-bold shadow-inner whitespace-nowrap">0 / 100</div>
             </div>
         </header>
 
@@ -395,7 +412,7 @@
                         <div id="pp-progress-bar" class="bg-orange-500 h-full transition-all duration-700" style="width: 0%"></div>
                     </div>
                 </div>
-                <button onclick="calculatePPResults()" class="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all">
+                <button onclick="calculatePPResults()" class="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all whitespace-nowrap">
                     إنهاء وتسليم
                 </button>
             </div>
@@ -424,12 +441,15 @@
     <div id="ws-app" class="app-container hidden pb-24 text-gray-900 selection:bg-blue-100 bg-[#f1f5f9]">
         <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50 border-b-4 border-blue-800">
             <div class="max-w-4xl mx-auto p-4 flex justify-between items-center">
-                <div>
-                    <button onclick="goHome()" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1 rounded text-sm mb-2 font-bold transition">الرجوع للقائمة</button>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="goHome()" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1 rounded text-sm font-bold transition">الرجوع للقائمة</button>
+                    <button id="ws-filter-btn" onclick="toggleWSFilter()" class="hidden bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-sm font-bold transition">إظهار الأخطاء فقط</button>
+                </div>
+                <div class="hidden sm:block text-center flex-1">
                     <h1 class="text-xl font-bold">مراجعة البحث عبر الويب (Web Search)</h1>
                     <p class="text-xs opacity-90 text-blue-100">100 سؤال شاملة لمهارات محركات البحث</p>
                 </div>
-                <div id="ws-live-counter" class="bg-blue-800 px-4 py-2 rounded-xl text-sm font-bold shadow-inner">0 / 100</div>
+                <div id="ws-live-counter" class="bg-blue-800 px-4 py-2 rounded-xl text-sm font-bold shadow-inner whitespace-nowrap">0 / 100</div>
             </div>
         </header>
 
@@ -457,7 +477,7 @@
                         <div id="ws-progress-bar" class="bg-blue-600 h-full transition-all duration-700" style="width: 0%"></div>
                     </div>
                 </div>
-                <button onclick="calculateWSResults()" class="bg-blue-700 hover:bg-blue-800 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all">
+                <button onclick="calculateWSResults()" class="bg-blue-700 hover:bg-blue-800 active:scale-95 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all whitespace-nowrap">
                     تسليم الإجابات
                 </button>
             </div>
@@ -515,65 +535,107 @@
         // 1. منطق تطبيق Cyber Security
         // ----------------------------------------------------
         const cyberQuestions = [
-            { q: "مجموعة من الأدوات والسياسات والمفاهيم الأمنية لإدارة المخاطر والتكنولوجيا التي يمكن لفرق الأمن السيبراني استخدامها في حماية الفضاء السيبراني والأصول الخاصة بالمؤسسات والمستخدمين هي تعريف:", options: ["التحول الرقمي", "الأمن السيبراني", "الذكاء الاصطناعي"], correct: 1 },
-            { q: "الوصول غير المصرح به إلى حساب أو نظام كمبيوتر معين هو:", options: ["الاختراق السيبراني", "الخصوصية الرقمية", "الأرشفة الإلكترونية"], correct: 0 },
-            { q: "يتكون نموذج ثالوث أمن المعلومات من (السرية والسلامة والتوافر).", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "ما هي العقوبة القانونية لتحميل أو استخدام برامج غير مرخصة؟", options: ["غرامة مالية فقط", "الحبس خمس سنوات", "المنع من السفر"], correct: 1 },
-            { q: "أحد التطبيقات التالية تسمح للمستخدم بمشاركة الصور ومقاطع الفيديو لفترة زمنية يحددها المستخدم وهو:", options: ["فيسبوك", "واتساب", "سناب شات"], correct: 2 },
-            { q: "عندما ظهرت كلمة هاك (Hack) لأول مرة كان يقصد بها العبث بالأجهزة.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "أي من المواقع الإلكترونية التالية تحتوي على مواد غير لائقة للأطفال؟", options: ["المواقع التعليمية", "المواقع الإخبارية", "المواقع الإباحية"], correct: 2 },
-            { q: "يشير اختصار NTRA إلى:", options: ["المركز القومي للبحوث", "الجهاز القومي لتنظيم الاتصالات", "مؤسسة الاتصالات العالمية"], correct: 1 },
-            { q: "إن تعليم المهارات اللازمة لحماية البيانات الشخصية يعد من الواجبات الأساسية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "أي من العبارات التالية يفضل استبعاده أثناء تعليم الأطفال حماية بياناتهم؟", options: ["استخدام كلمات مرور قوية", "تحديث البرامج دورياً", "مشاركة كلمات المرور مع الأصدقاء المقربين"], correct: 2 },
-            { q: "يحدث التنمر الإلكتروني في غرف الدردشة أو المنتديات أو منصات التواصل الاجتماعي.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "ينقسم مرتكبو جرائم الاختراق إلى ثلاثة مجموعات رئيسية هم مخترق القباعة السوداء والبيضاء والرمادية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "كل شخص طبيعي أو اعتباري يستعمل خدمات تقنية المعلومات أو يستفيد منها بأي صورة كانت وهو:", options: ["المبرمج", "المستخدم", "المدير"], correct: 1 },
-            { q: "التهديدات + الثغرات الأمنية ينتج عنها:", options: ["المخاطر", "الأمان المطلق", "التطبيقات"], correct: 0 },
-            { q: "يشير مصطلح IoT إلى:", options: ["إنترنت الأشياء", "الذكاء الاصطناعي", "الأمان الرقمي"], correct: 0 },
-            { q: "ما هو الخيار الأمثل الذي يصف التنمر الإلكتروني (Cyberbullying)؟", options: ["مساعدة الآخرين تقنياً", "استخدام التكنولوجيا لمضايقة أو تهديد أو إحراج شخص آخر", "تحميل الملفات بسرعة"], correct: 1 },
-            { q: "الكشف عن الأسرار المتعلقة بالحياة الخاصة لشخص ما دون موافقته يعد جريمة جنائية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "اختصار المركز الوطني للاستعدادات والطوارئ والحاسبات هو:", options: ["EG-CERT", "CERT-US", "INTERPOL"], correct: 0 },
-            { q: "ما هي مخاطر السلوك التي تتضمن إرسال رسائل غير لائقة؟", options: ["سرقة الهوية", "التنمر الإلكتروني", "تحديث النظام"], correct: 1 },
-            { q: "الإجراء الأمثل لحماية الأطفال من التنمر الإلكتروني هو وضع جهاز الحاسوب في مكان مكشوف في المنزل.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "يشير اختصار الشبكة الخاصة الافتراضية إلى:", options: ["VPN", "HTTP", "LAN"], correct: 0 },
-            { q: "ينتج عن التنمر الإلكتروني في كثير من الأحيان حالة من (الاكتئاب).", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "مخترق القباعة البيضاء هم المجرمون الذين يخترقون الشبكات بهدف إيقاع الأذى بالضحية.", options: ["صواب", "خطأ"], correct: 1 },
-            { q: "الحد العمري للطالب لإنشاء حساب على فيسبوك أو إنستغرام يجب ألا يقل عن:", options: ["10 أعوام", "13 عاماً", "16 عاماً"], correct: 1 },
-            { q: "من مخاطر تصفح الأطفال للإنترنت (اضطراب السلوك).", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "مصطلح المرونة الرقمية هي القدرة التنظيمية على استشعار الأحداث المتعلقة بالتهديدات الإلكترونية ومقاومة المخاطر.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "من المبادئ الأساسية عند استخدام التقنيات الحديثة هو استخدام المحتوى اللائق.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "من التهديدات التي تستهدف الهاتف المحمول (التطبيقات الوهمية).", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "يقصد بالتوافر (Availability) توفر البيانات واتاحتها للأشخاص المصرح لهم فقط.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "أي من المصطلحات التالية يشير إلى سجل أو سلسلة من البيانات التي تم إنشاؤها أثناء استخدام الإنترنت؟", options: ["البصمة الرقمية", "المرونة الرقمية", "التشفير"], correct: 0 },
-            { q: "المخترقون الأخلاقيون هم مخترقو القباعة البيضاء.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "عند تلقي رسالة باكتشاف محاولة دخول غير معتادة لحسابك، يجب تغيير كلمة المرور فوراً.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "سلامة البيانات (Integrity) تعني ضمان موثوقيتها واتساقها بدقة.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "جملة (قف وفكر وتواصل) هي للتوعية بمجال السلامة على الإنترنت.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "تظهر النوافذ المنبثقة (Pop-ups) غالباً محتوى غير لائق للأطفال.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "التهديد السيبراني يشير لواقعة يحتمل إضرارها بمؤسسة أو هيئة حكومية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "يشير اختصار المصادقة الثنائية إلى:", options: ["2FA", "OTP", "SSL"], correct: 0 },
-            { q: "مخترق القباعة السوداء هم المجرمون الذين يخترقون الشبكات لإيقاع الأذى بالضحية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "الثغرة الأمنية هي أوجه الضعف الموجودة في أجهزة أو برامج معينة.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "الجريمة السيبرانية هي نشاط إجرامي يستخدم أو يستهدف جهاز كمبيوتر.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "المخاطر السيبرانية هي احتمالية حدوث أضرار أو فقد للأصول عند استغلال ثغرة أمنية.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "معرف الثغرات الأمنية ونقاط الضعف الشائعة يختصر بـ CVE.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "مخترق القباعة الرمادية يقومون باختراق الشبكات بشكل غير قانوني ولكنهم لا يهدفون لإيقاع الضرر.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "الاحتيال عبر الإنترنت هو عملية خداع الأفراد للحصول على المال.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "الابتزاز الإلكتروني هو طلب مبلغ مالي من الأفراد مقابل إيقاف الهجوم عليهم.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "من مهام برمجيات الفدية تشفير ملفات الضحية ومنعه من الوصول إليها.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "هجوم حجب الخدمة (DDoS) يهدف لإغراق الأنظمة بكم هائل من البيانات.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "دودة الكمبيوتر هي برمجية لا تهاجم المضيف بل تنتشر عبر الشبكات.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "حصان طروادة (Trojan Horse) يختبئ داخل برنامج أصلي مفيد لتحقيق أغراض ضارة.", options: ["صواب", "خطأ"], correct: 0 },
-            { q: "هجوم يوم الصفر (Zero Day) يستغل ثغرة أمنية جديدة لم يصدر لها تصحيح.", options: ["صواب", "خطأ"], correct: 0 }
+            { q: "الاختراق هو الدخول غير المرخص به أو المخالف لأحكام الترخيص إلى نظام معلوماتي.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يعد بوتات الإعلانات وتطبيقات تزوير الفواتير من التهديدات الخاصة بالتطبيقات الوهمية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تعتبر مواقع مسابقات اليانصيب الاحتيالية أحد أنواع المواقع الاحتيالية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من الممكن تسمية مصطلح الإزعاج والتحرش بالمراوغة والخداع.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يعتبر إرسال الرسائل غير اللائقة من قبل الأطفال الذين تقل أعمارهم عن 18 عاما جريمة جنائية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "إذا تم تثبيت تطبيق احتيالي على هاتفك يتعين عليك حذفه وتشغيل مكافح الفيروسات وتجنب الضغط على أي أزرار.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "صدر قانون مكافحة جرائم تقنية المعلومات في مصر عام 2018.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "علم الاستدلال الرقمي الحاسبي هو علم جمع الأدلة الرقمية وفحصها وتفسيرها وتقديمها للسلطات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "اختصار مركز عمليات الأمن السيبراني هو SOC.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يعد من التهديدات التي تواجه المتسوق عبر الإنترنت: الشبكات اللاسلكية غير الآمنة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "بروتوكول الإشارة الضوئية لتبادل المعلومات الاستخبارية يطلق عليه TLP.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "ينصح باستخدام الشبكات اللاسلكية غير المشفرة في التسوق عبر الإنترنت.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "تتضح لنا دائما المخاطر التي تستهدف عملية التسوق عبر الإنترنت لعدم قدرة المهاجمين على إخفاء جرائمهم.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "كلما زاد تفاعلك عبر شبكة الإنترنت يتم إنتاج معلومات وبيانات خاصة بك وربطها بمعلومات شخصية عنك.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يستحوذ قطاع التجارة الرقمية على ما يقارب من 32% من التهديدات والهجمات السيبرانية الناجحة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تتظاهر بأنها شركات موثوقة كالبنوك للحصول على المعلومات الشخصية وهي: مواقع الويب المخادعة (Phishing).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقوم بروتوكول الإشارة الضوئية (TLP) بتقييد مشاركة المعلومات بحيث تصل فقط إلى الشخص المناسب.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تقدم وعودا بالحصول على جوائز كبرى لدفعك لتقديم معلوماتك المادية وهي مواقع مسابقات اليانصيب الاحتيالية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تستخدم نشاطا تجاريا وهميا لجمع المعلومات عن البطاقات الائتمانية الخاصة بالضحايا وهي: مواقع التسوق الإلكتروني الاحتيالية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تستخدم نوافذ تنبيهات الأمان الزائفة في خداعك حتى تقوم بتثبيت برامج ضارة بدعوى أنها مكافح فيروسات: مواقع التخويف المخادعة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "رداءة تصميم الموقع والرسومات منخفضة الدقة قد تكون مؤشرا واضحا على أن الموقع آمن.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "يشير اختصار ITU إلى الاتحاد الدولي للاتصالات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "في حال تعرضك للاحتيال الإلكتروني يجب تحديث أرقام التعريف وكلمات المرور المرتبطة بالبنوك والبريد.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من أساليب توعية الأطفال بكيفية التسوق عبر الإنترنت، عدم السماح لهم بالتسوق إلا تحت إشراف مباشر منك.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من العلامات التحذيرية التي تدل على أن الموقع احتيالي استخدام عبارات عاطفية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أي شخص طبيعي أو اعتباري يزود المستخدمين بخدمة تقنيات المعلومات والاتصالات يسمى: مقدم الخدمة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "صدر قانون حماية البيانات الشخصية المصري عام 2020.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "كل ما يمكن إنشاؤه أو تخزينه أو معالجته بواسطة تقنية المعلومات كالأرقام والحروف والصور يسمى: البيانات والمعلومات الإلكترونية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "اختصار هجمات حجب الخدمة هو DoS / DDoS.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "بيانات متعلقة بشخص طبيعي محدد أو يمكن تحديده بشكل مباشر تسمى: البيانات الشخصية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "بيانات متعلقة بالدولة أو أحد سلطاتها والمتاحة على الشبكة المعلوماتية تسمى: البيانات الحكومية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عملية إلكترونية أو تقنية تتم جزئيا أو كليا لكتابة أو تجميع أو تسجيل البيانات باستخدام وسائط إلكترونية تسمى: المعالجة الإلكترونية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مشاهدة البيانات أو المعلومات بغرض التنصت أو التعطيل أو النسخ لأسباب غير مشروعة تسمى: عملية الاعتراض.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يحدث النبذ الإلكتروني عندما يقوم المتنمر بإجبار الضحية على مغادرة إحدى غرف الدردشة بقصد إيذائه.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عندما يقوم المتنمر بإرسال رسائل مسيئة تحمل تهديدات للضحية بشكل متكرر تسمى: الإزعاج والتحرش.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "معلومات إلكترونية لها قوة أو قيمة مستخرجة من الحاسب ويمكن تجميعها لتقديمها كدليل تسمى: الدليل الرقمي.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عندما يقوم المتنمر بنشر تعليقات عن الآخرين لإيذاء مشاعرهم وتوجيه اتهامات كاذبة هذه الأفعال تسمى التصيد (Trolling).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "صدر قانون الطفل المصري عام 1996.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الإزعاج وانتحال الشخصية والمطاردة الإلكترونية والنبذ من أنواع التنمر الإلكتروني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الانتقاد والتشهير كأحد أنواع التنمر الإلكتروني من الممكن الإشارة إليه بـ تشويه السمعة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الإهانة المباشرة (Flaming) يقوم فيها المتنمر بإهانة الضحية علنا وإرسال رسائل مسيئة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عملية مراقبة نشاط الضحية على شبكة الإنترنت وتوجيه اتهامات كاذبة وإرسال التهديدات تسمى: المطاردة الإلكترونية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تم طرح أول كمبيوتر رقمي في الأسواق عام 1943.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "التشهير وإفشاء الأسرار (Doxing) يتم فيها الكشف علنا عن الأسرار والمعلومات الحساسة دون موافقة الشخص.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقوم المتنمر بتسجيل الدخول إلى حساب الضحية على إحدى منصات التواصل مستخدما حسابه لنشر إساءات، ويسمى ذلك: انتحال الشخصية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يمكن حماية أبنائك من التنمر الإلكتروني عن طريق مراقبة سلوكهم على شبكة الإنترنت واستخدام مواقع ويب آمنة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تراجع مستوى الطفل الدراسي والعزلة من أعراض تعرض الطفل للتنمر الإلكتروني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقوم المتنمر بإنشاء ملفات تعريف شخصية وهمية نيابة عن ضحاياه دون علمهم وتعرف هذه العملية بـ: التنكر بانتحال شخصية وهمية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "اختصار معرف الثغرات الأمنية ونقاط الضعف الشائعة هو CVE.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مجموعة الأدوات والسياسات الأمنية لإدارة المخاطر وحماية الفضاء السيبراني والأصول تسمى: الأمن السيبراني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الوصول غير المصرح به إلى حساب أو نظام كمبيوتر معين هو تعريف لـ: الاختراق السيبراني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يتكون نموذج ثالوث أمن المعلومات من السرية والسلامة والتوافر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "ما هي العقوبة القانونية لتحميل أو استخدام برامج غير مرخصة طبقا للقانون؟", options: ["الحبس خمس سنوات", "غرامة فقط"], correct: 0 },
+            { q: "تطبيق يسمح بمشاركة الصور ومقاطع الفيديو لفترة زمنية يحددها المستخدم ثم تختفي: سناب شات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عندما ظهرت كلمة هاك (Hack) لأول مرة كان يقصد بها: العبث بالأجهزة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار NTRA إلى الجهاز القومي لتنظيم الاتصالات.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تعليم المهارات اللازمة لحماية البيانات الشخصية يعد من الواجبات الأساسية، ويجب استبعاد مشاركة كلمات المرور مع الأصدقاء.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "ينقسم مرتكبو جرائم الاختراق إلى ثلاثة مجموعات: مخترق القبعة السوداء والبيضاء والرمادية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "التهديدات والثغرات الأمنية ينتج عنها: المخاطر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار IoT إلى: إنترنت الأشياء.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "استخدام التكنولوجيا لمضايقة أو تهديد أو إحراج شخص آخر هو الوصف الأمثل لـ: التنمر الإلكتروني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الكشف عن الأسرار المتعلقة بالحياة الخاصة لشخص ما دون موافقته لا يعد جريمة جنائية.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "اختصار المركز الوطني للاستعدادات والطوارئ والحاسبات في مصر هو: EG-CERT.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الإجراء الأمثل لحماية الأطفال من التنمر الإلكتروني في المنزل هو: وضع جهاز الحاسوب في مكان مكشوف.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار الشبكة الخاصة الافتراضية إلى: VPN.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يعد التنمر الإلكتروني أكثر ضررا من التنمر العادي وينتج عنه في الغالب مرض الاكتئاب.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مخترقو القبعة البيضاء هم المجرمون الذين يخترقون شبكات الكمبيوتر بهدف إيقاع الأذى.", options: ["صواب", "خطأ"], correct: 1 },
+            { q: "الفائدة التي تعود من إجراء نقاش مفتوح مع الأطفال حول الإنترنت هي: التخلص من أي تردد في الإبلاغ عن التجارب السيئة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الحد العمري للطالب لإنشاء حساب على موقع فيسبوك أو إنستغرام يجب ألا يقل عن 13 عام.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أحد المخاطر التي قد يتعرض لها الطفل أثناء تصفح الإنترنت هو اضطراب السلوك.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "القدرة التنظيمية على استشعار الأحداث المتعلقة بالتهديدات التخريبية ومقاومة المخاطر تسمى: المرونة الرقمية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من المبادئ العامة الأساسية عند استخدام التقنيات الرقمية الحديثة: استخدام المحتوى اللائق.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الإجراء الذي تنصح أبناءك باتباعه قبل تنزيل أي تطبيق هو: قراءة مراجعات التطبيق وتقييماته.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من التهديدات التي تستهدف الهاتف المحمول: التطبيقات الوهمية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقصد بالتوافر (Availability) توفر البيانات وإتاحتها بشكل متسق وموثوق للمصرح لهم.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "نظام القيم والمبادئ الأخلاقية التي تؤثر على كيفية اتخاذ الأشخاص لقراراتهم: الأخلاق (Ethics).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "اختراق البيانات الشخصية يعرض الفرد لعدة مخاطر أهمها سرقة الهوية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير إلى سجل أو سلسلة من البيانات التي تم إنشاؤها أثناء استخدام الإنترنت: البصمة الرقمية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "المخترقون الأخلاقيون هم مخترقو القبعة البيضاء.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تطبيق جديد للتواصل الاجتماعي يجب ألا يستخدمه الطلاب أو الأطفال لوجود مخاطر به: تطبيق يوبو (Yubo).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عند تلقي رسالة باكتشاف محاولة تسجيل الدخول لحسابك بطريقة غير معتادة، يجب تسجيل الدخول وتغيير كلمة المرور فورا.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من علامات إدمان الطفل لاستخدام الإنترنت: عدم الشعور بالوقت.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تسمح تطبيقات الرقابة الأبوية بالمساعدة على تصفية المحتوى غير الآمن للطلاب.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يقصد بالسلامة (Integrity) ضمان موثوقية البيانات واتساقها ودقتها وعدم التلاعب بها.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "جملة (قف وفكر وتواصل) هي جملة عالمية للتوعية والتثقيف في مجال السلامة على الإنترنت.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يظهر المحتوى غير اللائق للأطفال كثيرا في: صفحات النوافذ المنبثقة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "أنشأ مجلس الوزراء المصري المجلس الأعلى للأمن السيبراني عام 2014.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "من الممارسات على وسائل التواصل التي تعرض مرتكبها للمساءلة القانونية: الاستخدام غير القانوني للعلامة التجارية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "يشير اختصار المصادقة الثنائية إلى: 2FA.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "مخترقو القبعة الرمادية يقومون باختراق الشبكات بشكل غير قانوني ولكنهم لا يهدفون إلى إيقاع الضرر بأحد.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "تشير إلى أوجه الضعف الموجودة في أجهزة أو برامج تقدم عبر شبكة الإنترنت: الثغرة الأمنية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "الجريمة السيبرانية هي نشاط إجرامي يستخدم أو يستهدف جهاز كمبيوتر أو شبكة كمبيوتر متصلة بشبكة.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عند حجب وسائل التواصل الاجتماعي عن الصغار قد يجدون وسائل أخرى للوصول إليها، لذلك التوعية أهم.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "عملية خداع الأفراد للحصول على المال عبر الإنترنت تسمى: الاحتيال عبر الإنترنت.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "جريمة يقوم فيها المحتال بالاستيلاء على البيانات المالية أو المعلومات الشخصية (الاسم، تاريخ الميلاد): سرقة الهوية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "طلب مبلغ مالي من أحد الأفراد مقابل إيقاف الهجوم عليه أو معالجة آثاره: الابتزاز الإلكتروني.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "برمجيات تشفر ملفات الضحية وتمنعه من الوصول لبياناته وتهدده بنشرها إن لم يدفع المطلوب: برمجيات الفدية.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "هجوم يتم فيه إغراق الخوادم بكم هائل من البيانات لإحداث اختناق وجعل النظام غير قادر على تلبية الطلبات المشروعة: هجوم حجب الخدمة (DDoS).", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "برمجيات لا تهاجم المضيف بل هي قائمة بذاتها وتنتشر عبر الشبكات: دودة الكمبيوتر.", options: ["صواب", "خطأ"], correct: 0 },
+            { q: "هجوم يتمكن المهاجم فيه من إنشاء نقطة اتصال وهمية تحمل نفس اسم الشبكة الأصلية اللاسلكية لخداع المستخدمين: هجوم التوأم الشرير.", options: ["صواب", "خطأ"], correct: 0 }
         ];
-
-        for(let i=51; i<=100; i++) {
-            cyberQuestions.push({
-                q: "سؤال الأمن السيبراني رقم " + i + ": " + (i%2==0 ? "هل التشفير وسيلة لحماية البيانات؟" : "هل كلمات المرور الضعيفة تعد ثغرة أمنية؟"),
-                options: ["صواب", "خطأ"],
-                correct: 0
-            });
-        }
 
         let cyberUserAnswers = [];
 
@@ -643,19 +705,24 @@
             }
 
             let score = 0;
-            cyberUserAnswers.forEach((ans, i) => {
-                if(ans === cyberQuestions[i].correct) score++;
-            });
-
+            
             // تعليم الإجابات الصحيحة والخاطئة
             cyberQuestions.forEach((q, i) => {
-                const buttons = document.querySelectorAll(`#cy-q-block-${i} .cy-option-btn`);
+                const qBlock = document.getElementById(`cy-q-block-${i}`);
+                const buttons = qBlock.querySelectorAll(`.cy-option-btn`);
                 buttons.forEach(btn => {
                     btn.onclick = null; // إيقاف التعديل
                     btn.classList.add('cursor-default');
                 });
                 const correctIdx = q.correct;
                 const userIdx = cyberUserAnswers[i];
+
+                if(userIdx === correctIdx) {
+                    score++;
+                    qBlock.classList.add('is-correct');
+                } else {
+                    qBlock.classList.add('is-wrong');
+                }
 
                 // تعليم الإجابة الصحيحة
                 buttons[correctIdx].classList.remove('border-gray-200');
@@ -711,6 +778,7 @@
             document.getElementById('cy-result-screen').classList.add('hidden');
             document.getElementById('cy-quiz-screen').classList.remove('hidden');
             document.getElementById('cy-submit-area').style.display = 'none'; // إخفاء زر التسليم
+            document.getElementById('cy-filter-btn').classList.remove('hidden'); // إظهار زر الفلترة
             window.scrollTo(0,0);
         }
 
@@ -718,9 +786,32 @@
             document.getElementById('cy-quiz-screen').classList.remove('hidden');
             document.getElementById('cy-result-screen').classList.add('hidden');
             document.getElementById('cy-submit-area').style.display = 'block'; // إظهار زر التسليم مجدداً
+            
+            // تهيئة زر الفلترة وإخفاؤه
+            const filterBtn = document.getElementById('cy-filter-btn');
+            filterBtn.classList.add('hidden');
+            filterBtn.innerText = "إظهار الأخطاء فقط";
+            filterBtn.className = "hidden absolute left-4 top-4 bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition";
+            document.getElementById('cy-questions-list').classList.remove('show-only-wrong');
+            
             initCyber();
             updateCyberProgress();
             window.scrollTo(0,0);
+        }
+
+        function toggleCyberFilter() {
+            const list = document.getElementById('cy-questions-list');
+            const btn = document.getElementById('cy-filter-btn');
+            list.classList.toggle('show-only-wrong');
+            if(list.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.classList.replace('bg-rose-600', 'bg-blue-600');
+                btn.classList.replace('hover:bg-rose-500', 'hover:bg-blue-500');
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.classList.replace('bg-blue-600', 'bg-rose-600');
+                btn.classList.replace('hover:bg-blue-500', 'hover:bg-rose-500');
+            }
         }
 
         // ----------------------------------------------------
@@ -886,6 +977,7 @@
             document.getElementById('ex-quiz-header').style.display = 'none';
             document.getElementById('ex-result').style.display = 'block';
             document.getElementById('ex-footer-actions').style.display = 'none';
+            document.getElementById('ex-filter-btn').style.display = 'inline-block';
 
             excelQuestions.forEach((item, index) => {
                 const selected = document.querySelector(`#ex-app input[name="ex_q${index}"]:checked`);
@@ -905,17 +997,17 @@
 
                     if (selectedIdx === correctIdx) {
                         score++;
-                        qBox.classList.add('ex-correct-bg');
+                        qBox.classList.add('ex-correct-bg', 'is-correct');
                         selectedLabel.classList.add('ex-selected-correct');
                         feedbackDiv.innerHTML = `<span style="color:var(--excel-success); font-weight:bold;">✅ إجابة صحيحة</span>`;
                     } else {
-                        qBox.classList.add('ex-wrong-bg');
+                        qBox.classList.add('ex-wrong-bg', 'is-wrong');
                         selectedLabel.classList.add('ex-selected-wrong');
                         correctLabel.style.border = "2px solid var(--excel-success)";
                         feedbackDiv.innerHTML = `<span style="color:var(--excel-danger); font-weight:bold;">❌ إجابة خاطئة. الإجابة الصحيحة هي: ${item.options[correctIdx]}</span>`;
                     }
                 } else {
-                    qBox.classList.add('ex-wrong-bg');
+                    qBox.classList.add('ex-wrong-bg', 'is-wrong');
                     correctLabel.style.border = "2px solid var(--excel-success)";
                     feedbackDiv.innerHTML = `<span style="color:var(--excel-danger); font-weight:bold;">⚠️ لم يتم الحل. الإجابة الصحيحة: ${item.options[correctIdx]}</span>`;
                 }
@@ -942,11 +1034,31 @@
             document.getElementById('ex-quiz-header').style.display = 'block';
             document.getElementById('ex-result').style.display = 'none';
             document.getElementById('ex-footer-actions').style.display = 'block';
+            
+            const btn = document.getElementById('ex-filter-btn');
+            btn.style.display = 'none';
+            btn.innerText = "إظهار الأخطاء فقط";
+            btn.style.background = "#d93025";
+            document.getElementById('ex-quiz-body').classList.remove('show-only-wrong');
+            
             initExcel();
             updateExcelProgress();
             window.scrollTo(0,0);
         }
 
+        function toggleExcelFilter() {
+            const body = document.getElementById('ex-quiz-body');
+            const btn = document.getElementById('ex-filter-btn');
+            body.classList.toggle('show-only-wrong');
+            
+            if(body.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.style.background = "#1a73e8";
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.style.background = "#d93025";
+            }
+        }
 
         // ----------------------------------------------------
         // 3. منطق تطبيق IT & OS
@@ -1095,11 +1207,14 @@
             finishBtn.disabled = true;
             finishBtn.innerText = "تم التصحيح - تصفح الأسئلة بالأسفل";
 
+            document.getElementById('it-filter-btn').style.display = 'inline-block';
+
             itQuestions.forEach((item, index) => {
                 const selected = document.querySelector(`#it-app input[name="it_q${index}"]:checked`);
                 const feedbackDiv = document.getElementById(`it-feedback-${index}`);
                 const correctLabel = document.getElementById(`it-label-${index}-${item.correct}`);
                 const labels = document.querySelectorAll(`#it-q-card-${index} .it-option-item`);
+                const card = document.getElementById(`it-q-card-${index}`);
                 
                 labels.forEach(l => l.classList.add('disabled'));
 
@@ -1108,16 +1223,19 @@
                     if (userVal === item.correct) {
                         score++;
                         correctLabel.classList.add('it-correct');
+                        card.classList.add('is-correct');
                     } else {
                         const userLabel = document.getElementById(`it-label-${index}-${userVal}`);
                         userLabel.classList.add('it-wrong');
                         correctLabel.classList.add('it-correct');
                         feedbackDiv.style.display = 'block';
+                        card.classList.add('is-wrong');
                     }
                 } else {
                     correctLabel.classList.add('it-correct');
                     correctLabel.style.borderStyle = 'dashed';
                     feedbackDiv.style.display = 'block';
+                    card.classList.add('is-wrong');
                 }
                 document.getElementsByName(`it_q${index}`).forEach(inp => inp.disabled = true);
             });
@@ -1152,9 +1270,30 @@
             document.getElementById('it-result-summary').style.display = 'none';
             document.getElementById('it-finish-btn').disabled = false;
             document.getElementById('it-finish-btn').innerText = "إنهاء الاختبار وعرض النتيجة";
+            
+            const filterBtn = document.getElementById('it-filter-btn');
+            filterBtn.style.display = 'none';
+            filterBtn.innerText = "إظهار الأخطاء فقط";
+            filterBtn.style.background = "var(--error)";
+            document.getElementById('it-questions-list').classList.remove('show-only-wrong');
+            
             initIT();
             updateITProgress();
             window.scrollTo(0,0);
+        }
+
+        function toggleITFilter() {
+            const list = document.getElementById('it-questions-list');
+            const btn = document.getElementById('it-filter-btn');
+            list.classList.toggle('show-only-wrong');
+            
+            if(list.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.style.background = "var(--primary)";
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.style.background = "var(--error)";
+            }
         }
 
         // ----------------------------------------------------
@@ -1338,14 +1477,14 @@
                     const answerIndex = parseInt(selected.value);
                     if (answerIndex === item.correct) {
                         score++;
-                        card.classList.add('mo-correct-answer');
+                        card.classList.add('mo-correct-answer', 'is-correct');
                         feedbackDiv.innerHTML = `<span class="text-green-700 font-bold" style="color: #27ae60;">✓ إجابة صحيحة</span>`;
                     } else {
-                        card.classList.add('mo-wrong-answer');
+                        card.classList.add('mo-wrong-answer', 'is-wrong');
                         feedbackDiv.innerHTML = `<span class="text-red-700 font-bold" style="color: #e74c3c;">✗ إجابة خاطئة. الإجابة الصحيحة هي: ${item.options[item.correct]}</span>`;
                     }
                 } else {
-                    card.classList.add('mo-wrong-answer');
+                    card.classList.add('mo-wrong-answer', 'is-wrong');
                     feedbackDiv.innerHTML = `<span class="text-red-700 font-bold" style="color: #e74c3c;">⚠️ لم يتم الإجابة. الإجابة الصحيحة هي: ${item.options[item.correct]}</span>`;
                 }
 
@@ -1373,6 +1512,7 @@
             document.getElementById('mo-result-section').style.display = 'none';
             document.getElementById('mo-quiz-form').style.display = 'block';
             document.getElementById('mo-submit-area').style.display = 'none'; // إخفاء زر التسليم
+            document.getElementById('mo-review-tools').classList.remove('hidden'); // إظهار أداة الفلترة
             window.scrollTo(0,0);
         }
 
@@ -1380,9 +1520,31 @@
             document.getElementById('mo-quiz-form').style.display = 'block';
             document.getElementById('mo-result-section').style.display = 'none';
             document.getElementById('mo-submit-area').style.display = 'block'; // إظهار زر التسليم مجدداً
+            
+            const tools = document.getElementById('mo-review-tools');
+            tools.classList.add('hidden');
+            const btn = document.getElementById('mo-filter-btn');
+            btn.innerText = "إظهار الأخطاء فقط";
+            btn.style.background = "#e74c3c";
+            document.getElementById('mo-questions-container').classList.remove('show-only-wrong');
+
             initMobile();
             updateMobileProgress();
             window.scrollTo(0,0);
+        }
+
+        function toggleMobileFilter() {
+            const container = document.getElementById('mo-questions-container');
+            const btn = document.getElementById('mo-filter-btn');
+            container.classList.toggle('show-only-wrong');
+            
+            if(container.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.style.background = "#3498db";
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.style.background = "#e74c3c";
+            }
         }
 
         // ----------------------------------------------------
@@ -1541,12 +1703,15 @@
                     if(val === d.a) {
                         score++;
                         options[val].classList.add('pp-correct');
+                        card.classList.add('is-correct');
                     } else {
                         options[val].classList.add('pp-wrong');
                         options[d.a].classList.add('pp-correct');
+                        card.classList.add('is-wrong');
                     }
                 } else {
                     options[d.a].classList.add('pp-correct');
+                    card.classList.add('is-wrong');
                 }
             });
 
@@ -1577,14 +1742,39 @@
 
         function closePPModalAndReview() {
             document.getElementById('pp-results-modal').classList.add('hidden');
+            document.getElementById('pp-filter-btn').classList.remove('hidden');
             window.scrollTo(0,0);
         }
 
         function resetPP() {
             document.getElementById('pp-results-modal').classList.add('hidden');
+            
+            const btn = document.getElementById('pp-filter-btn');
+            btn.classList.add('hidden');
+            btn.innerText = "إظهار الأخطاء فقط";
+            btn.classList.replace('bg-blue-600', 'bg-rose-600');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-rose-700');
+            document.getElementById('pp-questions-container').classList.remove('show-only-wrong');
+            
             renderPPQuiz();
             updatePPProgress();
             window.scrollTo(0,0);
+        }
+
+        function togglePPFilter() {
+            const container = document.getElementById('pp-questions-container');
+            const btn = document.getElementById('pp-filter-btn');
+            container.classList.toggle('show-only-wrong');
+            
+            if(container.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.classList.replace('bg-rose-600', 'bg-blue-600');
+                btn.classList.replace('hover:bg-rose-700', 'hover:bg-blue-700');
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.classList.replace('bg-blue-600', 'bg-rose-600');
+                btn.classList.replace('hover:bg-blue-700', 'hover:bg-rose-700');
+            }
         }
 
         // ----------------------------------------------------
@@ -1743,12 +1933,15 @@
                     if(val === d.a) {
                         score++;
                         options[val].classList.add('ws-correct');
+                        card.classList.add('is-correct');
                     } else {
                         options[val].classList.add('ws-wrong');
                         options[d.a].classList.add('ws-correct');
+                        card.classList.add('is-wrong');
                     }
                 } else {
                     options[d.a].classList.add('ws-correct');
+                    card.classList.add('is-wrong');
                 }
             });
 
@@ -1779,14 +1972,39 @@
 
         function closeWSModalAndReview() {
             document.getElementById('ws-results-modal').classList.add('hidden');
+            document.getElementById('ws-filter-btn').classList.remove('hidden');
             window.scrollTo(0,0);
         }
 
         function resetWS() {
             document.getElementById('ws-results-modal').classList.add('hidden');
+            
+            const btn = document.getElementById('ws-filter-btn');
+            btn.classList.add('hidden');
+            btn.innerText = "إظهار الأخطاء فقط";
+            btn.classList.replace('bg-blue-600', 'bg-rose-600');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-rose-700');
+            document.getElementById('ws-questions-container').classList.remove('show-only-wrong');
+
             renderWSQuiz();
             updateWSProgress();
             window.scrollTo(0,0);
+        }
+
+        function toggleWSFilter() {
+            const container = document.getElementById('ws-questions-container');
+            const btn = document.getElementById('ws-filter-btn');
+            container.classList.toggle('show-only-wrong');
+            
+            if(container.classList.contains('show-only-wrong')) {
+                btn.innerText = "إظهار كل الأسئلة";
+                btn.classList.replace('bg-rose-600', 'bg-blue-600');
+                btn.classList.replace('hover:bg-rose-700', 'hover:bg-blue-700');
+            } else {
+                btn.innerText = "إظهار الأخطاء فقط";
+                btn.classList.replace('bg-blue-600', 'bg-rose-600');
+                btn.classList.replace('hover:bg-blue-700', 'hover:bg-rose-700');
+            }
         }
 
     </script>
